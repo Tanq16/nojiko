@@ -2,7 +2,7 @@ server:
   port: 8080
 
 header:
-  title: "Homelab Dashboard"
+  title: "Nojiko Dashboard"
   logoURL: "https://avatars.githubusercontent.com/u/37408906" # Example URL
   showWeather: true
   weatherAPIKey: "YOUR_API_KEY" # From a service like OpenWeatherMap
