@@ -23,27 +23,36 @@ type YouTubeCard struct {
 
 // Section data structures
 type StatusCardSection struct {
-	Title string      `json:"title"`
-	Icon  string      `json:"icon"`
-	Cards interface{} `json:"cards"`
+	Title string `json:"title"`
+	Icon  string `json:"icon"`
+	Cards any    `json:"cards"`
 }
 
 type ThumbFeedSection struct {
-	Title    string      `json:"title"`
-	Icon     string      `json:"icon"`
-	FeedType string      `json:"feedType"`
-	Cards    interface{} `json:"cards"`
+	Title    string `json:"title"`
+	Icon     string `json:"icon"`
+	FeedType string `json:"feedType"`
+	Cards    any    `json:"cards"`
 }
 
 type HeaderInfo struct {
-	Title   string       `json:"title"`
-	LogoURL string       `json:"logoURL"`
-	Weather *WeatherInfo `json:"weather,omitempty"`
+	Title    string       `json:"title"`
+	LogoURL  string       `json:"logoURL"`
+	ShowLogo bool         `json:"showLogo"`
+	Weather  *WeatherInfo `json:"weather,omitempty"`
 }
 
 type WeatherInfo struct {
-	TempC       int    `json:"tempC"`
-	Description string `json:"description"`
+	TempC       float64 `json:"tempC"`
+	Description string  `json:"description"`
+}
+
+// OpenMeteo specific response structure
+type OpenMeteoResponse struct {
+	CurrentWeather struct {
+		Temperature float64 `json:"temperature"`
+		WeatherCode int     `json:"weathercode"`
+	} `json:"current_weather"`
 }
 
 func GetStatusCardData(configs []config.StatusCardConfig) []StatusCardSection {
@@ -89,18 +98,4 @@ func GetThumbFeedData(configs []config.ThumbFeedConfig) []ThumbFeedSection {
 		sections = append(sections, section)
 	}
 	return sections
-}
-
-func GetHeaderInfo(cfg *config.HeaderConfig) *HeaderInfo {
-	info := &HeaderInfo{
-		Title:   cfg.Title,
-		LogoURL: cfg.LogoURL,
-	}
-	if cfg.ShowWeather {
-		info.Weather = &WeatherInfo{
-			TempC:       19,
-			Description: "Partly Cloudy",
-		}
-	}
-	return info
 }

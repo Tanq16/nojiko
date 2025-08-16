@@ -9,7 +9,7 @@ const getIcon = (name) => ICONS[name] || ICONS['default'];
 
 const createLinkHTML = (link) => `
     <a href="${link.url}" class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors">
-        <i data-lucide="${getIcon(link.icon)}" class="w-4 h-4 mr-3"></i>${link.name}
+        <i data-lucide="${getIcon(link.icon)}" class="w-4 h-4 mr-3"></i>${link.name || 'Unnamed'}
     </a>`;
 
 const createFolderHTML = (folder) => `
@@ -17,7 +17,7 @@ const createFolderHTML = (folder) => `
         <summary class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors mb-2">
             <i data-lucide="chevron-right" class="chevron-icon w-4 h-4 mr-2"></i>
             <i data-lucide="${getIcon(folder.icon)}" class="w-4 h-4 mr-2 text-ctp-peach"></i>
-            ${folder.name}
+            ${folder.name || 'Unnamed'}
         </summary>
         <div class="pl-6 space-y-2">
             ${folder.links.map(createLinkHTML).join('')}
@@ -36,13 +36,18 @@ const createCategoryHTML = (cat) => `
     </details>`;
 
 const createHeaderContentHTML = (header) => `
-    <img src="${header.logoURL}" alt="Logo" class="w-16 h-16 rounded-full mr-4" onerror="this.onerror=null;this.src='[https://placehold.co/40x40/181825/cdd6f4?text=](https://placehold.co/40x40/181825/cdd6f4?text=):)';">
+    ${header.showLogo ? `<img src="${header.logoURL}" alt="Logo" class="w-16 h-16 rounded-full mr-4" onerror="this.onerror=null;this.src='logo-low.png';">` : ''}
     <h1 class="text-3xl font-bold text-ctp-text">${header.title}</h1>`;
 
 const createWeatherHTML = (weather) => weather ? `
-    <i data-lucide="sun" class="w-6 h-6 text-ctp-yellow"></i>
-    <span class="font-semibold text-lg">${weather.tempC}°C</span>
-    <span class="text-sm">${weather.description}</span>` : '';
+    <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center sm:items-end w-full">
+        <div class="flex items-center space-x-3 text-ctp-subtext1">
+            <i data-lucide="sun" class="w-6 h-6 text-ctp-yellow"></i>
+            <span class="font-semibold text-lg">${weather.tempC}°C</span>
+            <span class="text-sm">${weather.description}</span>
+        </div>
+        <p class="text-xs text-ctp-overlay0">via Open-Meteo.com</p>
+    </a>` : '';
 
 // Card Definitions
 const CARD_TEMPLATES = {
@@ -57,7 +62,7 @@ const CARD_TEMPLATES = {
     
     youtube: (video) => `
         <a href="${video.url}" class="group block">
-            <img src="${video.thumbnail}" alt="Video Thumbnail" class="w-full h-28 object-cover rounded-lg mb-2" onerror="this.onerror=null;this.src='[https://placehold.co/600x400/181825/cdd6f4?text=Video](https://placehold.co/600x400/181825/cdd6f4?text=Video)';">
+            <img src="${video.thumbnail}" alt="Video Thumbnail" class="w-full h-28 object-cover rounded-lg mb-2" onerror="this.onerror=null;this.src='https://placehold.co/600x400/181825/cdd6f4?text=Video';">
             <h3 class="font-semibold text-sm text-ctp-text truncate group-hover:text-ctp-red transition-colors">${video.title}</h3>
             <p class="text-xs text-ctp-subtext0">${video.channel}</p>
         </a>`,

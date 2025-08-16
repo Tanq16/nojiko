@@ -30,33 +30,26 @@ func NewState(cfg *config.Config) *State {
 func (s *State) updateState() {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-
 	log.Println("Updating application state...")
-
 	s.header = fetcher.GetHeaderInfo(&s.cfg.Header)
 
 	var wg sync.WaitGroup
 	wg.Add(2)
-
 	go func() {
 		defer wg.Done()
 		s.statusCards = fetcher.GetStatusCardData(s.cfg.StatusCards)
 	}()
-
 	go func() {
 		defer wg.Done()
 		s.thumbFeeds = fetcher.GetThumbFeedData(s.cfg.ThumbFeeds)
 	}()
-
 	wg.Wait()
-
 	log.Println("Application state updated.")
 }
 
 func (s *State) StartUpdateLoop() {
 	ticker := time.NewTicker(1 * time.Hour)
 	defer ticker.Stop()
-
 	for range ticker.C {
 		s.updateState()
 	}

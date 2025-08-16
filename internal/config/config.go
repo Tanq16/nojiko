@@ -14,11 +14,12 @@ type Config struct {
 }
 
 type HeaderConfig struct {
-	Title         string `yaml:"title"`
-	LogoURL       string `yaml:"logoURL"`
-	ShowWeather   bool   `yaml:"showWeather"`
-	WeatherAPIKey string `yaml:"weatherAPIKey"`
-	City          string `yaml:"city"`
+	Title       string  `yaml:"title"`
+	LogoURL     string  `yaml:"logoURL"`
+	ShowLogo    bool    `yaml:"showLogo"`
+	ShowWeather bool    `yaml:"showWeather"`
+	Latitude    float64 `yaml:"latitude"`
+	Longitude   float64 `yaml:"longitude"`
 }
 
 type StatusCardConfig struct {
@@ -65,11 +66,28 @@ func Load(path string) (*Config, error) {
 	if err != nil {
 		return nil, err
 	}
-
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, err
 	}
 
+	// Set default icons for bookmarks
+	for i := range cfg.Bookmarks {
+		for j := range cfg.Bookmarks[i].Links {
+			if cfg.Bookmarks[i].Links[j].Icon == "" {
+				cfg.Bookmarks[i].Links[j].Icon = "default"
+			}
+		}
+		for j := range cfg.Bookmarks[i].Folders {
+			if cfg.Bookmarks[i].Folders[j].Icon == "" {
+				cfg.Bookmarks[i].Folders[j].Icon = "folder"
+			}
+			for k := range cfg.Bookmarks[i].Folders[j].Links {
+				if cfg.Bookmarks[i].Folders[j].Links[k].Icon == "" {
+					cfg.Bookmarks[i].Folders[j].Links[k].Icon = "default"
+				}
+			}
+		}
+	}
 	return &cfg, nil
 }
