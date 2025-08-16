@@ -108,11 +108,9 @@
 
         // --- HTML Template Functions ---
         const createLinkHTML = (link) => `
-            <li>
-                <a href="${link.url}" class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors">
-                    <i data-lucide="${getIcon(link.icon)}" class="w-4 h-4 mr-3"></i>${link.name}
-                </a>
-            </li>`;
+            <a href="${link.url}" class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors">
+                <i data-lucide="${getIcon(link.icon)}" class="w-4 h-4 mr-3"></i>${link.name}
+            </a>`;
 
         const createFolderHTML = (folder) => `
             <details open>
@@ -121,7 +119,9 @@
                     <i data-lucide="${getIcon(folder.icon)}" class="w-4 h-4 mr-2 text-ctp-peach"></i>
                     ${folder.name}
                 </summary>
-                <ul class="space-y-2 pl-8">${folder.links.map(createLinkHTML).join('')}</ul>
+                <div class="pl-6 space-y-2">
+                    ${folder.links.map(createLinkHTML).join('')}
+                </div>
             </details>`;
 
         const createCategoryHTML = (cat) => `
@@ -129,8 +129,8 @@
                 <summary class="font-semibold text-${cat.color || 'ctp-green'} mb-2 flex items-center">
                     <i data-lucide="chevron-right" class="chevron-icon w-4 h-4 mr-2"></i>${cat.category}
                 </summary>
-                <div class="pl-6">
-                    <ul class="space-y-2">${(cat.links || []).map(createLinkHTML).join('')}</ul>
+                <div class="space-y-2 pl-6">
+                    ${(cat.links || []).map(createLinkHTML).join('')}
                     ${(cat.folders || []).map(createFolderHTML).join('')}
                 </div>
             </details>`;
