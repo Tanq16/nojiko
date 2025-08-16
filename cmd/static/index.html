@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Homelab Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --rosewater: #f5e0dc; --flamingo: #f2cdcd; --pink: #f5c2e7; --mauve: #cba6f7;
+            --red: #f38ba8; --maroon: #eba0ac; --peach: #fab387; --yellow: #f9e2af;
+            --green: #a6e3a1; --teal: #94e2d5; --sky: #89dceb; --sapphire: #74c7ec;
+            --blue: #89b4fa; --lavender: #b4befe; --text: #cdd6f4; --subtext1: #bac2de;
+            --subtext0: #a6adc8; --overlay2: #9399b2; --overlay1: #7f849c; --overlay0: #6c7086;
+            --surface2: #585b70; --surface1: #45475a; --surface0: #313244; --base: #1e1e2e;
+            --mantle: #181825; --crust: #11111b;
+        }
+        body { font-family: 'Inter', sans-serif; background-color: var(--mantle); color: var(--text); }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--crust); }
+        ::-webkit-scrollbar-thumb { background: var(--surface0); border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--surface1); }
+        summary { list-style: none; cursor: pointer; }
+        summary::-webkit-details-marker { display: none; }
+        .chevron-icon { transition: transform 0.2s ease-in-out; flex-shrink: 0; }
+        details[open] > summary > .chevron-icon { transform: rotate(90deg); }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'ctp-rosewater': 'var(--rosewater)', 'ctp-flamingo': 'var(--flamingo)',
+                        'ctp-pink': 'var(--pink)', 'ctp-mauve': 'var(--mauve)', 'ctp-red': 'var(--red)',
+                        'ctp-maroon': 'var(--maroon)', 'ctp-peach': 'var(--peach)', 'ctp-yellow': 'var(--yellow)',
+                        'ctp-green': 'var(--green)', 'ctp-teal': 'var(--teal)', 'ctp-sky': 'var(--sky)',
+                        'ctp-sapphire': 'var(--sapphire)', 'ctp-blue': 'var(--blue)', 'ctp-lavender': 'var(--lavender)',
+                        'ctp-text': 'var(--text)', 'ctp-subtext1': 'var(--subtext1)', 'ctp-subtext0': 'var(--subtext0)',
+                        'ctp-overlay2': 'var(--overlay2)', 'ctp-overlay1': 'var(--overlay1)', 'ctp-overlay0': 'var(--overlay0)',
+                        'ctp-surface2': 'var(--surface2)', 'ctp-surface1': 'var(--surface1)', 'ctp-surface0': 'var(--surface0)',
+                        'ctp-base': 'var(--base)', 'ctp-mantle': 'var(--mantle)', 'ctp-crust': 'var(--crust)',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="min-h-screen">
+    <div class="flex flex-col lg:flex-row min-h-screen">
+
+        <!-- Left Column: Bookmarks -->
+        <aside class="w-full lg:w-72 p-6 flex-shrink-0 flex flex-col">
+            <h1 class="text-xl font-bold mb-8 text-ctp-mauve flex items-center flex-shrink-0">
+                <i data-lucide="book-marked" class="mr-3"></i>Bookmarks
+            </h1>
+            <div id="bookmarks-container" class="overflow-y-auto flex-grow pr-2 space-y-4 text-sm">
+                <!-- Bookmarks will be injected here by JavaScript -->
+            </div>
+        </aside>
+
+        <!-- Vertical Separator -->
+        <div class="w-px bg-ctp-surface0 my-10 hidden lg:block"></div>
+
+        <!-- Right Column: Sections -->
+        <main class="flex-1 p-6 overflow-y-auto">
+            <!-- Header -->
+            <header id="main-header" class="flex flex-col sm:flex-row justify-between sm:items-center mb-6">
+                <!-- Header content will be injected here -->
+            </header>
+
+            <div class="h-px bg-ctp-surface0 my-8 w-1/4 mx-auto"></div>
+
+            <!-- GitHub Stats Section -->
+            <section>
+                <h2 class="text-xl font-bold text-ctp-lavender mb-4 flex items-center">
+                    <i data-lucide="github" class="mr-3"></i>GitHub Repositories
+                </h2>
+                <div id="github-repos-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- GitHub repo cards will be injected here -->
+                </div>
+            </section>
+
+            <div class="h-px bg-ctp-surface0 my-8 w-1/4 mx-auto"></div>
+
+            <!-- YouTube Section -->
+            <section>
+                <h2 class="text-xl font-bold text-ctp-red mb-4 flex items-center">
+                    <i data-lucide="youtube" class="mr-3"></i>Latest YouTube Videos
+                </h2>
+                <div id="youtube-videos-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                    <!-- YouTube video cards will be injected here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // --- Icon Mapping ---
+        const ICONS = {
+            'twitter': 'twitter', 'youtube': 'youtube', 'github': 'github', 'linkedin': 'linkedin',
+            'folder': 'folder', 'dot': 'dot', 'figma': 'figma', 'code': 'code', 'package': 'package',
+            'terminal': 'terminal-square', 'newspaper': 'newspaper', 'pen': 'pen-square', 'rss': 'rss',
+            'default': 'link-2'
+        };
+        const getIcon = (name) => ICONS[name] || ICONS['default'];
+
+        // --- HTML Template Functions ---
+        const createLinkHTML = (link) => `
+            <li>
+                <a href="${link.url}" class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors">
+                    <i data-lucide="${getIcon(link.icon)}" class="w-4 h-4 mr-3"></i>${link.name}
+                </a>
+            </li>`;
+
+        const createFolderHTML = (folder) => `
+            <details open>
+                <summary class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors mb-2">
+                    <i data-lucide="chevron-right" class="chevron-icon w-4 h-4 mr-2"></i>
+                    <i data-lucide="${getIcon(folder.icon)}" class="w-4 h-4 mr-2 text-ctp-peach"></i>
+                    ${folder.name}
+                </summary>
+                <ul class="space-y-2 pl-8">${folder.links.map(createLinkHTML).join('')}</ul>
+            </details>`;
+
+        const createCategoryHTML = (cat) => `
+            <details open>
+                <summary class="font-semibold text-${cat.color || 'ctp-green'} mb-2 flex items-center">
+                    <i data-lucide="chevron-right" class="chevron-icon w-4 h-4 mr-2"></i>${cat.category}
+                </summary>
+                <div class="pl-6">
+                    <ul class="space-y-2">${(cat.links || []).map(createLinkHTML).join('')}</ul>
+                    ${(cat.folders || []).map(createFolderHTML).join('')}
+                </div>
+            </details>`;
+
+        const createRepoCardHTML = (repo) => `
+            <div class="bg-ctp-base p-4 rounded-lg">
+                <a href="${repo.url}" class="font-semibold text-ctp-blue hover:underline mb-1 block truncate">${repo.name}</a>
+                <div class="flex items-center space-x-4 text-sm text-ctp-subtext1 mt-2">
+                    <span class="flex items-center"><i data-lucide="star" class="w-4 h-4 mr-1.5 text-ctp-yellow"></i>${repo.stars}</span>
+                    <span class="flex items-center"><i data-lucide="git-fork" class="w-4 h-4 mr-1.5 text-ctp-teal"></i>${repo.forks}</span>
+                </div>
+            </div>`;
+
+        const createVideoCardHTML = (video) => `
+            <a href="${video.url}" class="group block">
+                <img src="${video.thumbnail}" alt="Video Thumbnail" class="w-full h-28 object-cover rounded-lg mb-2" onerror="this.onerror=null;this.src='https://placehold.co/600x400/181825/cdd6f4?text=Video';">
+                <h3 class="font-semibold text-sm text-ctp-text truncate group-hover:text-ctp-red transition-colors">${video.title}</h3>
+                <p class="text-xs text-ctp-subtext0">${video.channel}</p>
+            </a>`;
+
+        const createHeaderHTML = (header) => `
+            <div class="flex items-center">
+                <img src="${header.logoURL}" alt="Logo" class="w-10 h-10 rounded-full mr-4" onerror="this.onerror=null;this.src='https://placehold.co/40x40/181825/cdd6f4?text=:)';">
+                <h1 class="text-3xl font-bold text-ctp-text">${header.title}</h1>
+            </div>
+            ${header.weather ? `
+            <div class="flex items-center space-x-3 text-ctp-subtext1 mt-4 sm:mt-0">
+                <i data-lucide="sun" class="w-6 h-6 text-ctp-yellow"></i>
+                <span class="font-semibold text-lg">${header.weather.tempC}°C</span>
+                <span class="text-sm">${header.weather.description}</span>
+            </div>` : ''}`;
+
+
+        // --- Data Fetching and Rendering ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const fetchData = async (url, containerId, templateFn) => {
+                try {
+                    const response = await fetch(url);
+                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                    const data = await response.json();
+                    const container = document.getElementById(containerId);
+                    if (container) {
+                        container.innerHTML = Array.isArray(data) 
+                            ? data.map(templateFn).join('')
+                            : templateFn(data);
+                    }
+                } catch (error) {
+                    console.error(`Failed to fetch from ${url}:`, error);
+                    const container = document.getElementById(containerId);
+                    if (container) container.innerHTML = `<p class="text-ctp-red">Error loading data.</p>`;
+                }
+            };
+
+            Promise.all([
+                fetchData('/api/header', 'main-header', createHeaderHTML),
+                fetchData('/api/bookmarks', 'bookmarks-container', createCategoryHTML),
+                fetchData('/api/github', 'github-repos-container', createRepoCardHTML),
+                fetchData('/api/youtube', 'youtube-videos-container', createVideoCardHTML),
+            ]).then(() => {
+                lucide.createIcons();
+            });
+        });
+    </script>
+</body>
+</html>

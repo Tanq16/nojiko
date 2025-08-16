@@ -1,0 +1,89 @@
+server:
+  port: 8080
+
+header:
+  title: "Homelab Dashboard"
+  logoURL: "https://avatars.githubusercontent.com/u/37408906" # Example URL
+  showWeather: true
+  weatherAPIKey: "YOUR_API_KEY" # From a service like OpenWeatherMap
+  city: "Toronto"
+
+github:
+  username: "your-github-username"
+  repositories:
+    - "homelab-dashboard"
+    - "dotfiles"
+    - "awesome-project-x"
+    - "media-server-config"
+    - "ansible-playbooks"
+    - "nix-configs"
+  showMockData: true # Set to false to disable mock data
+
+youtube:
+  apiKey: "your-youtube-api-key"
+  channels:
+    - "UC..."
+    - "UC..."
+  showMockData: true # Set to false to disable mock data
+
+bookmarks:
+  - category: "Social Media"
+    color: "ctp-green"
+    links:
+      - name: "Twitter / X"
+        url: "#"
+        icon: "twitter"
+      - name: "YouTube"
+        url: "#"
+        icon: "youtube"
+      - name: "GitHub"
+        url: "#"
+        icon: "github"
+      - name: "LinkedIn"
+        url: "#"
+        icon: "linkedin"
+
+  - category: "Development"
+    color: "ctp-yellow"
+    folders:
+      - name: "Frameworks"
+        icon: "folder"
+        links:
+          - name: "React Docs"
+            url: "#"
+            icon: "dot"
+          - name: "Tailwind CSS"
+            url: "#"
+            icon: "dot"
+    links:
+      - name: "Figma"
+        url: "#"
+        icon: "figma"
+      - name: "Stack Overflow"
+        url: "#"
+        icon: "code"
+
+  - category: "Homelab"
+    color: "ctp-blue"
+    folders:
+      - name: "Services"
+        icon: "folder"
+        links:
+          - name: "Proxmox"
+            url: "#"
+            icon: "dot"
+          - name: "Portainer"
+            url: "#"
+            icon: "dot"
+      - name: "Networking"
+        icon: "folder"
+        links:
+          - name: "Router Gateway"
+            url: "#"
+            icon: "dot"
+
+services:
+  - name: "Jellyfin"
+    url: "http://192.168.1.10:8096"
+  - name: "AdGuard"
+    url: "http://192.168.1.11:3000"
