@@ -37,7 +37,7 @@ func (s *State) updateState() {
 	wg.Add(2)
 	go func() {
 		defer wg.Done()
-		s.statusCards = fetcher.GetStatusCardData(s.cfg.StatusCards)
+		s.statusCards = fetcher.GetStatusCardData(s.cfg.StatusCards, s.cfg.GHToken)
 	}()
 	go func() {
 		defer wg.Done()

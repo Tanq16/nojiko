@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	GHToken     string             `yaml:"ghToken"`
 	Header      HeaderConfig       `yaml:"header"`
 	StatusCards []StatusCardConfig `yaml:"statusCards"`
 	ThumbFeeds  []ThumbFeedConfig  `yaml:"thumbFeeds"`
@@ -23,15 +24,16 @@ type HeaderConfig struct {
 }
 
 type StatusCardConfig struct {
-	Title        string            `yaml:"title"`
-	Icon         string            `yaml:"icon"`
-	ShowMockData bool              `yaml:"showMockData"`
-	Repositories []GitHubRepoOwner `yaml:"repositories"`
+	Title string           `yaml:"title"`
+	Icon  string           `yaml:"icon"`
+	Cards []StatusCardItem `yaml:"cards"`
 }
 
-type GitHubRepoOwner struct {
-	Owner string `yaml:"owner"`
-	Repo  string `yaml:"repo"`
+type StatusCardItem struct {
+	Type  string `yaml:"type"`
+	Owner string `yaml:"owner,omitempty"`
+	Repo  string `yaml:"repo,omitempty"`
+	Name  string `yaml:"name,omitempty"`
 }
 
 type ThumbFeedConfig struct {
@@ -71,7 +73,18 @@ func Load(path string) (*Config, error) {
 		return nil, err
 	}
 
-	// Set default icons for bookmarks
+	for i := range cfg.StatusCards {
+		if cfg.StatusCards[i].Icon == "" {
+			cfg.StatusCards[i].Icon = "chart-column-stacked"
+		}
+	}
+
+	for i := range cfg.ThumbFeeds {
+		if cfg.ThumbFeeds[i].Icon == "" {
+			cfg.ThumbFeeds[i].Icon = "tv-minimal"
+		}
+	}
+
 	for i := range cfg.Bookmarks {
 		for j := range cfg.Bookmarks[i].Links {
 			if cfg.Bookmarks[i].Links[j].Icon == "" {

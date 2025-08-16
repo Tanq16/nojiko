@@ -1,17 +1,21 @@
 package fetcher
 
 import (
-	"fmt"
-
 	"github.com/tanq16/nojiko/internal/config"
 )
 
-// Generic card data structures
 type GitHubCard struct {
-	Name  string `json:"name"`
-	URL   string `json:"url"`
-	Stars int    `json:"stars"`
-	Forks int    `json:"forks"`
+	Type   string `json:"type"`
+	Name   string `json:"name"`
+	URL    string `json:"url"`
+	Stars  int    `json:"stars"`
+	Issues int    `json:"issues"`
+	PRs    int    `json:"prs"`
+}
+
+type ServiceStatusCard struct {
+	Type string `json:"type"`
+	Name string `json:"name"`
 }
 
 type YouTubeCard struct {
@@ -21,11 +25,10 @@ type YouTubeCard struct {
 	Thumbnail string `json:"thumbnail"`
 }
 
-// Section data structures
 type StatusCardSection struct {
 	Title string `json:"title"`
 	Icon  string `json:"icon"`
-	Cards any    `json:"cards"`
+	Cards []any  `json:"cards"`
 }
 
 type ThumbFeedSection struct {
@@ -47,36 +50,11 @@ type WeatherInfo struct {
 	Description string  `json:"description"`
 }
 
-// OpenMeteo specific response structure
 type OpenMeteoResponse struct {
 	CurrentWeather struct {
 		Temperature float64 `json:"temperature"`
 		WeatherCode int     `json:"weathercode"`
 	} `json:"current_weather"`
-}
-
-func GetStatusCardData(configs []config.StatusCardConfig) []StatusCardSection {
-	var sections []StatusCardSection
-	for _, conf := range configs {
-		section := StatusCardSection{
-			Title: conf.Title,
-			Icon:  conf.Icon,
-		}
-		if conf.ShowMockData {
-			var cards []GitHubCard
-			for _, repo := range conf.Repositories {
-				cards = append(cards, GitHubCard{
-					Name:  fmt.Sprintf("%s/%s", repo.Owner, repo.Repo),
-					URL:   "#",
-					Stars: 100,
-					Forks: 20,
-				})
-			}
-			section.Cards = cards
-		}
-		sections = append(sections, section)
-	}
-	return sections
 }
 
 func GetThumbFeedData(configs []config.ThumbFeedConfig) []ThumbFeedSection {

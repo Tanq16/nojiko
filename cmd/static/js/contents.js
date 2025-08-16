@@ -2,6 +2,7 @@ const ICONS = {
     'twitter': 'twitter', 'youtube': 'youtube', 'github': 'github', 'linkedin': 'linkedin',
     'folder': 'folder', 'dot': 'dot', 'figma': 'figma', 'code': 'code', 'package': 'package',
     'terminal': 'terminal-square', 'newspaper': 'newspaper', 'pen': 'pen-square', 'rss': 'rss',
+    'chart-column-stacked': 'bar-chart-3', 'tv-minimal': 'tv',
     'default': 'link-2'
 };
 
@@ -49,29 +50,29 @@ const createWeatherHTML = (weather) => weather ? `
         <p class="text-xs text-ctp-overlay0">via Open-Meteo.com</p>
     </a>` : '';
 
-// Card Definitions
 const CARD_TEMPLATES = {
     github: (repo) => `
         <div class="bg-ctp-base p-4 rounded-lg">
-            <a href="${repo.url}" class="font-semibold text-ctp-blue hover:underline mb-1 block truncate">${repo.name}</a>
+            <a href="${repo.url}" target="_blank" rel="noopener noreferrer" class="font-semibold text-ctp-blue hover:underline mb-1 block truncate">${repo.name}</a>
             <div class="flex items-center space-x-4 text-sm text-ctp-subtext1 mt-2">
-                <span class="flex items-center"><i data-lucide="star" class="w-4 h-4 mr-1.5 text-ctp-yellow"></i>${repo.stars}</span>
-                <span class="flex items-center"><i data-lucide="git-fork" class="w-4 h-4 mr-1.5 text-ctp-teal"></i>${repo.forks}</span>
+                <span class="flex items-center" title="Stars"><i data-lucide="star" class="w-4 h-4 mr-1.5 text-ctp-yellow"></i>${repo.stars}</span>
+                <span class="flex items-center" title="Issues"><i data-lucide="alert-circle" class="w-4 h-4 mr-1.5 text-ctp-red"></i>${repo.issues}</span>
+                <span class="flex items-center" title="Pull Requests"><i data-lucide="git-pull-request" class="w-4 h-4 mr-1.5 text-ctp-green"></i>${repo.prs}</span>
             </div>
         </div>`,
-    
+    service: (service) => `
+        <div class="bg-ctp-base p-4 rounded-lg flex items-center justify-between">
+            <span class="font-semibold text-ctp-text">${service.name}</span>
+            <div class="w-3 h-3 rounded-full bg-ctp-green" title="Operational"></div>
+        </div>`,
     youtube: (video) => `
         <a href="${video.url}" class="group block">
             <img src="${video.thumbnail}" alt="Video Thumbnail" class="w-full h-28 object-cover rounded-lg mb-2" onerror="this.onerror=null;this.src='https://placehold.co/600x400/181825/cdd6f4?text=Video';">
             <h3 class="font-semibold text-sm text-ctp-text truncate group-hover:text-ctp-red transition-colors">${video.title}</h3>
             <p class="text-xs text-ctp-subtext0">${video.channel}</p>
         </a>`,
-
-    reddit: (post) => `<!-- Reddit card placeholder -->`,
-    service_stats: (service) => `<!-- Service stats card placeholder -->`,
 };
 
-// Section Definitions
 const createStatusCardSectionHTML = (section) => `
     <section>
         <div class="h-px bg-ctp-surface0 my-8 w-1/4 mx-auto"></div>
@@ -79,7 +80,10 @@ const createStatusCardSectionHTML = (section) => `
             <i data-lucide="${getIcon(section.icon)}" class="mr-3"></i>${section.title}
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            ${section.cards.map(CARD_TEMPLATES.github).join('')}
+            ${section.cards.map(card => {
+                const template = CARD_TEMPLATES[card.type];
+                return template ? template(card) : '<div>Unsupported card type</div>';
+            }).join('')}
         </div>
     </section>`;
 

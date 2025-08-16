@@ -1,3 +1,5 @@
+ghToken: "" # Add your GitHub token here if you have one
+
 header:
   title: "Nojiko Dashboard"
   showLogo: true
@@ -6,14 +8,18 @@ header:
   longitude: -79.38
 
 statusCards:
-  - title: "GitHub Repositories"
-    icon: "github"
-    showMockData: true
-    repositories:
-      - owner: "tanq16"
+  - title: "Project Status"
+    cards:
+      - type: "github"
+        owner: "tanq16"
         repo: "nojiko"
-      - owner: "torvalds"
+      - type: "github"
+        owner: "torvalds"
         repo: "linux"
+      - type: "service"
+        name: "API Server"
+      - type: "service"
+        name: "Database"
 
 thumbFeeds:
   - title: "Latest YouTube Videos"
