@@ -48,14 +48,22 @@
     </script>
 </head>
 <body class="min-h-screen">
-    <div class="flex flex-col lg:flex-row min-h-screen">
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-20 hidden lg:hidden"></div>
 
-        <!-- Left Column: Bookmarks -->
-        <aside class="w-full lg:w-72 p-6 flex-shrink-0 flex flex-col">
-            <h1 class="text-xl font-bold mb-8 text-ctp-mauve flex items-center flex-shrink-0">
-                <i data-lucide="book-marked" class="mr-3"></i>Bookmarks
-            </h1>
-            <div id="bookmarks-container" class="overflow-y-auto flex-grow pr-2 space-y-4 text-sm">
+    <div class="relative min-h-screen lg:flex">
+
+        <!-- Left Column: Bookmarks Sidebar -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 bg-ctp-mantle w-72 p-6 flex-shrink-0 flex-col z-30 transform -translate-x-full transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0 lg:flex">
+            <div class="flex items-center justify-between flex-shrink-0">
+                <h1 class="text-xl font-bold text-ctp-mauve flex items-center">
+                    <i data-lucide="book-marked" class="mr-3"></i>Bookmarks
+                </h1>
+                <button id="close-sidebar-btn" class="lg:hidden text-ctp-subtext1 hover:text-ctp-rosewater">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div id="bookmarks-container" class="overflow-y-auto flex-grow pr-2 space-y-4 text-sm mt-8">
                 <!-- Bookmarks will be injected here by JavaScript -->
             </div>
         </aside>
@@ -63,11 +71,21 @@
         <!-- Vertical Separator -->
         <div class="w-px bg-ctp-surface0 my-10 hidden lg:block"></div>
 
-        <!-- Right Column: Sections -->
+        <!-- Right Column: Main Content -->
         <main class="flex-1 p-6 overflow-y-auto">
             <!-- Header -->
             <header id="main-header" class="flex flex-col sm:flex-row justify-between sm:items-center mb-6">
-                <!-- Header content will be injected here -->
+                <div class="flex items-center">
+                    <button id="open-sidebar-btn" class="lg:hidden mr-4 text-ctp-subtext1 hover:text-ctp-rosewater">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div id="header-content" class="flex items-center">
+                        <!-- Header content (logo, title) will be injected here -->
+                    </div>
+                </div>
+                <div id="weather-content" class="flex items-center space-x-3 text-ctp-subtext1 mt-4 sm:mt-0">
+                    <!-- Weather content will be injected here -->
+                </div>
             </header>
 
             <div class="h-px bg-ctp-surface0 my-8 w-1/4 mx-auto"></div>
@@ -77,7 +95,7 @@
                 <h2 class="text-xl font-bold text-ctp-lavender mb-4 flex items-center">
                     <i data-lucide="github" class="mr-3"></i>GitHub Repositories
                 </h2>
-                <div id="github-repos-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div id="github-repos-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                     <!-- GitHub repo cards will be injected here -->
                 </div>
             </section>
@@ -97,7 +115,7 @@
     </div>
 
     <script>
-        // --- Icon Mapping ---
+        // Icon Mapping
         const ICONS = {
             'twitter': 'twitter', 'youtube': 'youtube', 'github': 'github', 'linkedin': 'linkedin',
             'folder': 'folder', 'dot': 'dot', 'figma': 'figma', 'code': 'code', 'package': 'package',
@@ -106,7 +124,7 @@
         };
         const getIcon = (name) => ICONS[name] || ICONS['default'];
 
-        // --- HTML Template Functions ---
+        // HTML Template Functions
         const createLinkHTML = (link) => `
             <a href="${link.url}" class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors">
                 <i data-lucide="${getIcon(link.icon)}" class="w-4 h-4 mr-3"></i>${link.name}
@@ -151,41 +169,70 @@
                 <p class="text-xs text-ctp-subtext0">${video.channel}</p>
             </a>`;
 
-        const createHeaderHTML = (header) => `
-            <div class="flex items-center">
-                <img src="${header.logoURL}" alt="Logo" class="w-10 h-10 rounded-full mr-4" onerror="this.onerror=null;this.src='https://placehold.co/40x40/181825/cdd6f4?text=:)';">
-                <h1 class="text-3xl font-bold text-ctp-text">${header.title}</h1>
-            </div>
-            ${header.weather ? `
-            <div class="flex items-center space-x-3 text-ctp-subtext1 mt-4 sm:mt-0">
-                <i data-lucide="sun" class="w-6 h-6 text-ctp-yellow"></i>
-                <span class="font-semibold text-lg">${header.weather.tempC}°C</span>
-                <span class="text-sm">${header.weather.description}</span>
-            </div>` : ''}`;
+        const createHeaderContentHTML = (header) => `
+            <img src="${header.logoURL}" alt="Logo" class="w-10 h-10 rounded-full mr-4" onerror="this.onerror=null;this.src='https://placehold.co/40x40/181825/cdd6f4?text=:)';">
+            <h1 class="text-3xl font-bold text-ctp-text">${header.title}</h1>`;
 
+        const createWeatherHTML = (weather) => weather ? `
+            <i data-lucide="sun" class="w-6 h-6 text-ctp-yellow"></i>
+            <span class="font-semibold text-lg">${weather.tempC}°C</span>
+            <span class="text-sm">${weather.description}</span>` : '';
 
-        // --- Data Fetching and Rendering ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const fetchData = async (url, containerId, templateFn) => {
-                try {
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                    const data = await response.json();
-                    const container = document.getElementById(containerId);
-                    if (container) {
-                        container.innerHTML = Array.isArray(data) 
-                            ? data.map(templateFn).join('')
-                            : templateFn(data);
-                    }
-                } catch (error) {
-                    console.error(`Failed to fetch from ${url}:`, error);
-                    const container = document.getElementById(containerId);
-                    if (container) container.innerHTML = `<p class="text-ctp-red">Error loading data.</p>`;
+        // Data Fetching and Rendering
+        const fetchData = async (url, containerId, templateFn) => {
+            try {
+                const response = await fetch(url);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                const container = document.getElementById(containerId);
+                if (container) {
+                    container.innerHTML = Array.isArray(data) 
+                        ? data.map(templateFn).join('')
+                        : templateFn(data);
                 }
-            };
+            } catch (error) {
+                console.error(`Failed to fetch from ${url}:`, error);
+                const container = document.getElementById(containerId);
+                if (container) container.innerHTML = `<p class="text-ctp-red">Error loading data.</p>`;
+            }
+        };
 
+        const fetchHeaderData = async () => {
+            try {
+                const response = await fetch('/api/header');
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const data = await response.json();
+                document.getElementById('header-content').innerHTML = createHeaderContentHTML(data);
+                document.getElementById('weather-content').innerHTML = createWeatherHTML(data.weather);
+            } catch (error) {
+                console.error(`Failed to fetch from /api/header:`, error);
+            }
+        };
+
+        // Sidebar Logic
+        const setupSidebar = () => {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            const openBtn = document.getElementById('open-sidebar-btn');
+            const closeBtn = document.getElementById('close-sidebar-btn');
+            const openSidebar = () => {
+                sidebar.classList.remove('-translate-x-full');
+                overlay.classList.remove('hidden');
+            };
+            const closeSidebar = () => {
+                sidebar.classList.add('-translate-x-full');
+                overlay.classList.add('hidden');
+            };
+            openBtn.addEventListener('click', openSidebar);
+            closeBtn.addEventListener('click', closeSidebar);
+            overlay.addEventListener('click', closeSidebar);
+        };
+
+        // DOMContentLoaded
+        document.addEventListener('DOMContentLoaded', () => {
+            setupSidebar();
             Promise.all([
-                fetchData('/api/header', 'main-header', createHeaderHTML),
+                fetchHeaderData(),
                 fetchData('/api/bookmarks', 'bookmarks-container', createCategoryHTML),
                 fetchData('/api/github', 'github-repos-container', createRepoCardHTML),
                 fetchData('/api/youtube', 'youtube-videos-container', createVideoCardHTML),
