@@ -17,7 +17,6 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 
 	ctx := context.Background()
 	var client *github.Client
-
 	if ghToken != "" {
 		ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: ghToken})
 		tc := oauth2.NewClient(ctx, ts)
@@ -30,12 +29,10 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 		wg.Add(1)
 		go func(conf config.StatusCardConfig) {
 			defer wg.Done()
-
 			section := StatusCardSection{
 				Title: conf.Title,
 				Icon:  conf.Icon,
 			}
-
 			var cards []any
 			var cardWg sync.WaitGroup
 			var cardMu sync.Mutex
@@ -44,7 +41,6 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 				cardWg.Add(1)
 				go func(item config.StatusCardItem) {
 					defer cardWg.Done()
-
 					switch item.Type {
 					case "github":
 						repo, _, err := client.Repositories.Get(ctx, item.Owner, item.Repo)
@@ -52,7 +48,6 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 							log.Printf("Error fetching repo %s/%s: %v", item.Owner, item.Repo, err)
 							return
 						}
-
 						issues, _, err := client.Issues.ListByRepo(ctx, item.Owner, item.Repo, &github.IssueListByRepoOptions{State: "open"})
 						if err != nil {
 							log.Printf("Error fetching issues for %s/%s: %v", item.Owner, item.Repo, err)
@@ -67,7 +62,6 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 								openIssues++
 							}
 						}
-
 						card := GitHubCard{
 							Type:   "github",
 							Name:   repo.GetFullName(),
@@ -93,13 +87,11 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 			}
 			cardWg.Wait()
 			section.Cards = cards
-
 			mu.Lock()
 			sections = append(sections, section)
 			mu.Unlock()
 		}(conf)
 	}
-
 	wg.Wait()
 	return sections
 }

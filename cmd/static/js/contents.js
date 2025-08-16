@@ -1,8 +1,8 @@
 const ICONS = {
     'twitter': 'twitter', 'youtube': 'youtube', 'github': 'github', 'linkedin': 'linkedin',
     'folder': 'folder', 'dot': 'dot', 'figma': 'figma', 'code': 'code', 'package': 'package',
-    'terminal': 'terminal-square', 'newspaper': 'newspaper', 'pen': 'pen-square', 'rss': 'rss',
-    'chart-column-stacked': 'bar-chart-3', 'tv-minimal': 'tv',
+    'terminal-square': 'terminal-square', 'newspaper': 'newspaper', 'pen-square': 'pen-square', 'rss': 'rss',
+    'bar-chart-3': 'bar-chart-3', 'tv-minimal': 'tv-minimal',
     'default': 'link-2'
 };
 

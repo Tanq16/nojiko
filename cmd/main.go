@@ -18,12 +18,9 @@ func main() {
 	if err != nil {
 		log.Fatalf("failed to load config: %v", err)
 	}
-
 	appState := state.NewState(cfg)
 	go appState.StartUpdateLoop()
-
 	router := api.NewRouter(staticFS, appState)
-
 	log.Println("Server starting on :8080")
 	if err := http.ListenAndServe(":8080", router); err != nil {
 		log.Fatalf("failed to start server: %v", err)

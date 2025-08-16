@@ -15,6 +15,8 @@ type GitHubCard struct {
 
 type ServiceStatusCard struct {
 	Type string `json:"type"`
+	URL  string `json:"url"`
+	// interface for arbitrary information
 	Name string `json:"name"`
 }
 

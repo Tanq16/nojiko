@@ -20,6 +20,18 @@ statusCards:
         name: "API Server"
       - type: "service"
         name: "Database"
+  - title: "Project Status"
+    cards:
+      - type: "github"
+        owner: "tanq16"
+        repo: "nojiko"
+      - type: "github"
+        owner: "torvalds"
+        repo: "linux"
+      - type: "service"
+        name: "API Server"
+      - type: "service"
+        name: "Database"
 
 thumbFeeds:
   - title: "Latest YouTube Videos"

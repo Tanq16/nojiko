@@ -30,10 +30,12 @@ type StatusCardConfig struct {
 }
 
 type StatusCardItem struct {
-	Type  string `yaml:"type"`
-	Owner string `yaml:"owner,omitempty"`
-	Repo  string `yaml:"repo,omitempty"`
-	Name  string `yaml:"name,omitempty"`
+	Type   string `yaml:"type"`
+	Owner  string `yaml:"owner,omitempty"`
+	Repo   string `yaml:"repo,omitempty"`
+	Name   string `yaml:"name,omitempty"`
+	APIKey string `yaml:"apikey,omitempty"`
+	URL    string `yaml:"url,omitempty"`
 }
 
 type ThumbFeedConfig struct {
@@ -75,10 +77,9 @@ func Load(path string) (*Config, error) {
 
 	for i := range cfg.StatusCards {
 		if cfg.StatusCards[i].Icon == "" {
-			cfg.StatusCards[i].Icon = "chart-column-stacked"
+			cfg.StatusCards[i].Icon = "bar-chart-3"
 		}
 	}
-
 	for i := range cfg.ThumbFeeds {
 		if cfg.ThumbFeeds[i].Icon == "" {
 			cfg.ThumbFeeds[i].Icon = "tv-minimal"

@@ -31,7 +31,7 @@ func (h *APIHandler) GetHeader(w http.ResponseWriter, r *http.Request) {
 	respondWithJSON(w, http.StatusOK, h.state.GetHeader())
 }
 
-func respondWithJSON(w http.ResponseWriter, code int, payload interface{}) {
+func respondWithJSON(w http.ResponseWriter, code int, payload any) {
 	response, err := json.Marshal(payload)
 	if err != nil {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
