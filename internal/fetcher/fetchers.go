@@ -1,77 +1,106 @@
 package fetcher
 
-import "github.com/tanq16/nojiko/internal/config"
+import (
+	"fmt"
 
-// RepoStats holds statistics for a GitHub repository.
-type RepoStats struct {
+	"github.com/tanq16/nojiko/internal/config"
+)
+
+// Generic card data structures
+type GitHubCard struct {
 	Name  string `json:"name"`
 	URL   string `json:"url"`
 	Stars int    `json:"stars"`
 	Forks int    `json:"forks"`
 }
 
-// YouTubeVideo holds information about a YouTube video.
-type YouTubeVideo struct {
+type YouTubeCard struct {
 	Title     string `json:"title"`
 	Channel   string `json:"channel"`
 	URL       string `json:"url"`
 	Thumbnail string `json:"thumbnail"`
 }
 
-// HeaderInfo holds information for the main page header.
+// Section data structures
+type StatusCardSection struct {
+	Title string      `json:"title"`
+	Icon  string      `json:"icon"`
+	Cards interface{} `json:"cards"`
+}
+
+type ThumbFeedSection struct {
+	Title    string      `json:"title"`
+	Icon     string      `json:"icon"`
+	FeedType string      `json:"feedType"`
+	Cards    interface{} `json:"cards"`
+}
+
 type HeaderInfo struct {
 	Title   string       `json:"title"`
 	LogoURL string       `json:"logoURL"`
 	Weather *WeatherInfo `json:"weather,omitempty"`
 }
 
-// WeatherInfo holds weather data.
 type WeatherInfo struct {
 	TempC       int    `json:"tempC"`
 	Description string `json:"description"`
 }
 
-// GetGitHubStats returns stats for configured repositories.
-func GetGitHubStats(cfg config.GithubConfig) []RepoStats {
-	// Placeholder implementation.
-	// In a real scenario, you'd make an API call to GitHub here.
-	if cfg.ShowMockData {
-		return []RepoStats{
-			{Name: "homelab-dashboard", URL: "#", Stars: 7300, Forks: 251},
-			{Name: "dotfiles", URL: "#", Stars: 450, Forks: 32},
-			{Name: "awesome-project-x", URL: "#", Stars: 1200, Forks: 109},
-			{Name: "media-server-config", URL: "#", Stars: 88, Forks: 12},
-			{Name: "ansible-playbooks", URL: "#", Stars: 156, Forks: 45},
-			{Name: "nix-configs", URL: "#", Stars: 310, Forks: 28},
+func GetStatusCardData(configs []config.StatusCardConfig) []StatusCardSection {
+	var sections []StatusCardSection
+	for _, conf := range configs {
+		section := StatusCardSection{
+			Title: conf.Title,
+			Icon:  conf.Icon,
 		}
+		if conf.ShowMockData {
+			var cards []GitHubCard
+			for _, repo := range conf.Repositories {
+				cards = append(cards, GitHubCard{
+					Name:  fmt.Sprintf("%s/%s", repo.Owner, repo.Repo),
+					URL:   "#",
+					Stars: 100,
+					Forks: 20,
+				})
+			}
+			section.Cards = cards
+		}
+		sections = append(sections, section)
 	}
-	return []RepoStats{}
+	return sections
 }
 
-// GetYouTubeVideos returns the latest videos from configured channels.
-func GetYouTubeVideos(cfg config.YoutubeConfig) []YouTubeVideo {
-	// Placeholder implementation.
-	if cfg.ShowMockData {
-		return []YouTubeVideo{
-			{Title: "Making Sense of justify-content", Channel: "Kevin Powell", URL: "#", Thumbnail: "https://placehold.co/600x400/181825/cdd6f4?text=Video+1"},
-			{Title: "Zen 5 And AI Boom w/ Casey Muratori", Channel: "ThePrimeTime", URL: "#", Thumbnail: "https://placehold.co/600x400/181825/cdd6f4?text=Video+2"},
-			{Title: "Building the Lowest Rated PC", Channel: "Linus Tech Tips", URL: "#", Thumbnail: "https://placehold.co/600x400/181825/cdd6f4?text=Video+3"},
-			{Title: "Advanced Slicer settings and...", Channel: "Maker's Muse", URL: "#", Thumbnail: "https://placehold.co/600x400/181825/cdd6f4?text=Video+4"},
-			{Title: "Electronic Aircraft", Channel: "Tom Scott", URL: "#", Thumbnail: "https://placehold.co/600x400/181825/cdd6f4?text=Video+5"},
+func GetThumbFeedData(configs []config.ThumbFeedConfig) []ThumbFeedSection {
+	var sections []ThumbFeedSection
+	for _, conf := range configs {
+		section := ThumbFeedSection{
+			Title:    conf.Title,
+			Icon:     conf.Icon,
+			FeedType: conf.FeedType,
 		}
+		if conf.ShowMockData {
+			if conf.FeedType == "youtube" {
+				section.Cards = []YouTubeCard{
+					{Title: "Making Sense of justify-content", Channel: "Kevin Powell", URL: "#", Thumbnail: "https://placehold.co/600x400/181825/cdd6f4?text=Video+1"},
+					{Title: "Zen 5 And AI Boom", Channel: "ThePrimeTime", URL: "#", Thumbnail: "https://placehold.co/600x400/181825/cdd6f4?text=Video+2"},
+				}
+			}
+		}
+		sections = append(sections, section)
 	}
-	return []YouTubeVideo{}
+	return sections
 }
 
-// GetHeaderInfo returns data for the header.
-func GetHeaderInfo() *HeaderInfo {
-	// Placeholder implementation.
-	return &HeaderInfo{
-		Title:   "Nojiko Dashboard",
-		LogoURL: "logo.png",
-		Weather: &WeatherInfo{
+func GetHeaderInfo(cfg *config.HeaderConfig) *HeaderInfo {
+	info := &HeaderInfo{
+		Title:   cfg.Title,
+		LogoURL: cfg.LogoURL,
+	}
+	if cfg.ShowWeather {
+		info.Weather = &WeatherInfo{
 			TempC:       19,
 			Description: "Partly Cloudy",
-		},
+		}
 	}
+	return info
 }

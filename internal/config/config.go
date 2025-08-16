@@ -6,36 +6,13 @@ import (
 	"github.com/goccy/go-yaml"
 )
 
-// Config is the top-level configuration struct.
 type Config struct {
-	Server    ServerConfig       `yaml:"server"`
-	Github    GithubConfig       `yaml:"github"`
-	Youtube   YoutubeConfig      `yaml:"youtube"`
-	Bookmarks []BookmarkCategory `yaml:"bookmarks"`
-	Services  []Service          `yaml:"services"`
-	Header    HeaderConfig       `yaml:"header"`
+	Header      HeaderConfig       `yaml:"header"`
+	StatusCards []StatusCardConfig `yaml:"statusCards"`
+	ThumbFeeds  []ThumbFeedConfig  `yaml:"thumbFeeds"`
+	Bookmarks   []BookmarkCategory `yaml:"bookmarks"`
 }
 
-// ServerConfig holds server-related settings.
-type ServerConfig struct {
-	Port int `yaml:"port"`
-}
-
-// GithubConfig holds GitHub-related settings.
-type GithubConfig struct {
-	Username     string   `yaml:"username"`
-	Repositories []string `yaml:"repositories"`
-	ShowMockData bool     `yaml:"showMockData"`
-}
-
-// YoutubeConfig holds YouTube-related settings.
-type YoutubeConfig struct {
-	APIKey       string   `yaml:"apiKey"`
-	Channels     []string `yaml:"channels"`
-	ShowMockData bool     `yaml:"showMockData"`
-}
-
-// HeaderConfig holds settings for the main header.
 type HeaderConfig struct {
 	Title         string `yaml:"title"`
 	LogoURL       string `yaml:"logoURL"`
@@ -44,7 +21,26 @@ type HeaderConfig struct {
 	City          string `yaml:"city"`
 }
 
-// BookmarkCategory represents a category of bookmarks.
+type StatusCardConfig struct {
+	Title        string            `yaml:"title"`
+	Icon         string            `yaml:"icon"`
+	ShowMockData bool              `yaml:"showMockData"`
+	Repositories []GitHubRepoOwner `yaml:"repositories"`
+}
+
+type GitHubRepoOwner struct {
+	Owner string `yaml:"owner"`
+	Repo  string `yaml:"repo"`
+}
+
+type ThumbFeedConfig struct {
+	Title        string   `yaml:"title"`
+	Icon         string   `yaml:"icon"`
+	FeedType     string   `yaml:"feedType"`
+	ShowMockData bool     `yaml:"showMockData"`
+	Channels     []string `yaml:"channels"`
+}
+
 type BookmarkCategory struct {
 	Category string   `yaml:"category" json:"category"`
 	Color    string   `yaml:"color"    json:"color"`
@@ -52,27 +48,18 @@ type BookmarkCategory struct {
 	Folders  []Folder `yaml:"folders"  json:"folders"`
 }
 
-// Folder represents a collapsible folder of links.
 type Folder struct {
 	Name  string `yaml:"name"  json:"name"`
 	Icon  string `yaml:"icon"  json:"icon"`
 	Links []Link `yaml:"links" json:"links"`
 }
 
-// Link represents a single bookmark.
 type Link struct {
 	Name string `yaml:"name" json:"name"`
 	URL  string `yaml:"url"  json:"url"`
 	Icon string `yaml:"icon" json:"icon"`
 }
 
-// Service represents a self-hosted service to be monitored.
-type Service struct {
-	Name string `yaml:"name"`
-	URL  string `yaml:"url"`
-}
-
-// Load reads and parses the configuration file.
 func Load(path string) (*Config, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {

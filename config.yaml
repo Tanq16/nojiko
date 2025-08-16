@@ -1,30 +1,28 @@
-server:
-  port: 8080
-
 header:
   title: "Nojiko Dashboard"
-  logoURL: "https://avatars.githubusercontent.com/u/37408906" # Example URL
+  logoURL: "logo-low.png"
   showWeather: true
-  weatherAPIKey: "YOUR_API_KEY" # From a service like OpenWeatherMap
+  weatherAPIKey: "YOUR_API_KEY"
   city: "Toronto"
 
-github:
-  username: "your-github-username"
-  repositories:
-    - "homelab-dashboard"
-    - "dotfiles"
-    - "awesome-project-x"
-    - "media-server-config"
-    - "ansible-playbooks"
-    - "nix-configs"
-  showMockData: true # Set to false to disable mock data
+statusCards:
+  - title: "GitHub Repositories"
+    icon: "github"
+    showMockData: true
+    repositories:
+      - owner: "tanq16"
+        repo: "nojiko"
+      - owner: "torvalds"
+        repo: "linux"
 
-youtube:
-  apiKey: "your-youtube-api-key"
-  channels:
-    - "UC..."
-    - "UC..."
-  showMockData: true # Set to false to disable mock data
+thumbFeeds:
+  - title: "Latest YouTube Videos"
+    icon: "youtube"
+    feedType: "youtube"
+    showMockData: true
+    channels:
+      - "UC..."
+      - "UC..."
 
 bookmarks:
   - category: "Social Media"
@@ -36,13 +34,6 @@ bookmarks:
       - name: "YouTube"
         url: "#"
         icon: "youtube"
-      - name: "GitHub"
-        url: "#"
-        icon: "github"
-      - name: "LinkedIn"
-        url: "#"
-        icon: "linkedin"
-
   - category: "Development"
     color: "ctp-yellow"
     folders:
@@ -52,38 +43,3 @@ bookmarks:
           - name: "React Docs"
             url: "#"
             icon: "dot"
-          - name: "Tailwind CSS"
-            url: "#"
-            icon: "dot"
-    links:
-      - name: "Figma"
-        url: "#"
-        icon: "figma"
-      - name: "Stack Overflow"
-        url: "#"
-        icon: "code"
-
-  - category: "Homelab"
-    color: "ctp-blue"
-    folders:
-      - name: "Services"
-        icon: "folder"
-        links:
-          - name: "Proxmox"
-            url: "#"
-            icon: "dot"
-          - name: "Portainer"
-            url: "#"
-            icon: "dot"
-      - name: "Networking"
-        icon: "folder"
-        links:
-          - name: "Router Gateway"
-            url: "#"
-            icon: "dot"
-
-services:
-  - name: "Jellyfin"
-    url: "http://192.168.1.10:8096"
-  - name: "AdGuard"
-    url: "http://192.168.1.11:3000"
