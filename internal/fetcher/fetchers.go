@@ -67,8 +67,8 @@ func GetYouTubeVideos(cfg config.YoutubeConfig) []YouTubeVideo {
 func GetHeaderInfo() *HeaderInfo {
 	// Placeholder implementation.
 	return &HeaderInfo{
-		Title:   "Homelab Dashboard",
-		LogoURL: "https://avatars.githubusercontent.com/u/37408906",
+		Title:   "Nojiko Dashboard",
+		LogoURL: "logo.png",
 		Weather: &WeatherInfo{
 			TempC:       19,
 			Description: "Partly Cloudy",
