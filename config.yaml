@@ -8,13 +8,15 @@ header:
   longitude: -79.38
 
 thumbFeeds:
-  - title: "Latest YouTube Videos"
+  - title: "YouTube Feed"
     icon: "youtube"
     feedType: "youtube"
     limit: 10
     channels:
-      - "MrBeast"
+      - "mkbhd"
       - "LinusTechTips"
+      - "Dave2D"
+      - "NetworkChuck"
 
 statusCards:
   - title: "Project Status"
@@ -25,6 +27,8 @@ statusCards:
         repo: "nojiko"
       - owner: "torvalds"
         repo: "linux"
+      - owner: "tanq16"
+        repo: "local-content-share"
   - title: "Service Status"
     icon: "bar-chart-3"
     type: "service"
