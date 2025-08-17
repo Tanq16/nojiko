@@ -1,5 +1,7 @@
 package fetcher
 
+import "time"
+
 type GitHubCard struct {
 	Name   string `json:"name"`
 	URL    string `json:"url"`
@@ -14,12 +16,13 @@ type ServiceStatusCard struct {
 }
 
 type YouTubeCard struct {
-	Type      string `json:"type"`
-	Title     string `json:"title"`
-	Channel   string `json:"channel"`
-	URL       string `json:"url"`
-	Published string `json:"published"`
-	Thumbnail string `json:"thumbnail"`
+	Type        string    `json:"type"`
+	Title       string    `json:"title"`
+	Channel     string    `json:"channel"`
+	URL         string    `json:"url"`
+	Published   string    `json:"published"`
+	Thumbnail   string    `json:"thumbnail"`
+	PublishedAt time.Time `json:"-"`
 }
 
 type StatusCardSection struct {

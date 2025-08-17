@@ -7,7 +7,9 @@ import (
 	"log"
 	"net/http"
 	"regexp"
-	"sync"
+	"sort"
+	"strconv"
+	"strings"
 	"time"
 
 	"github.com/tanq16/nojiko/internal/config"
@@ -25,7 +27,6 @@ func newYouTubeScraper() *youtubeScraper {
 	}
 }
 
-// Simplified structs to navigate the complex ytInitialData JSON
 type ytInitialData struct {
 	Contents struct {
 		TwoColumnBrowseResultsRenderer struct {
@@ -72,6 +73,39 @@ type thumbnailData struct {
 	} `json:"thumbnails"`
 }
 
+var timeAgoRegex = regexp.MustCompile(`(\d+)\s+(minute|hour|day|week|month|year)s?\s+ago`)
+
+func parseTimeAgo(ago string) time.Time {
+	now := time.Now()
+	matches := timeAgoRegex.FindStringSubmatch(strings.ToLower(ago))
+	if len(matches) != 3 {
+		return time.Time{}
+	}
+
+	val, err := strconv.Atoi(matches[1])
+	if err != nil {
+		return time.Time{}
+	}
+
+	unit := matches[2]
+	switch unit {
+	case "minute":
+		return now.Add(-time.Duration(val) * time.Minute)
+	case "hour":
+		return now.Add(-time.Duration(val) * time.Hour)
+	case "day":
+		return now.AddDate(0, 0, -val)
+	case "week":
+		return now.AddDate(0, 0, -val*7)
+	case "month":
+		return now.AddDate(0, -val, 0)
+	case "year":
+		return now.AddDate(-val, 0, 0)
+	}
+
+	return time.Time{}
+}
+
 func (s *youtubeScraper) getLatestVideos(channelName string) []YouTubeCard {
 	url := fmt.Sprintf("https://www.youtube.com/@%s/videos", channelName)
 	req, err := http.NewRequest("GET", url, nil)
@@ -108,31 +142,30 @@ func (s *youtubeScraper) getLatestVideos(channelName string) []YouTubeCard {
 	}
 
 	var videos []YouTubeCard
-	// The video data is typically in the second tab
 	if len(data.Contents.TwoColumnBrowseResultsRenderer.Tabs) < 2 {
 		return nil
 	}
 	videoItems := data.Contents.TwoColumnBrowseResultsRenderer.Tabs[1].TabRenderer.Content.RichGridRenderer.Contents
 	for _, item := range videoItems {
-		if len(videos) >= 5 { // Limit to 5 videos
+		if len(videos) >= 5 {
 			break
 		}
 		vr := item.RichItemRenderer.Content.VideoRenderer
 		if vr.VideoID == "" || len(vr.Title.Runs) == 0 {
 			continue
 		}
-		// Get the highest quality thumbnail
 		var bestThumbnail string
 		if len(vr.Thumbnail.Thumbnails) > 0 {
 			bestThumbnail = vr.Thumbnail.Thumbnails[len(vr.Thumbnail.Thumbnails)-1].URL
 		}
 		videos = append(videos, YouTubeCard{
-			Type:      "youtube",
-			Title:     vr.Title.Runs[0].Text,
-			URL:       fmt.Sprintf("https://www.youtube.com/watch?v=%s", vr.VideoID),
-			Channel:   channelName,
-			Published: vr.Published.SimpleText,
-			Thumbnail: bestThumbnail,
+			Type:        "youtube",
+			Title:       vr.Title.Runs[0].Text,
+			URL:         fmt.Sprintf("https://www.youtube.com/watch?v=%s", vr.VideoID),
+			Channel:     channelName,
+			Published:   vr.Published.SimpleText,
+			Thumbnail:   bestThumbnail,
+			PublishedAt: parseTimeAgo(vr.Published.SimpleText),
 		})
 	}
 	return videos
@@ -141,42 +174,34 @@ func (s *youtubeScraper) getLatestVideos(channelName string) []YouTubeCard {
 func GetThumbFeedData(configs []config.ThumbFeedConfig) []ThumbFeedSection {
 	var sections []ThumbFeedSection
 	scraper := newYouTubeScraper()
-	var wg sync.WaitGroup
-	var mu sync.Mutex
+
 	for _, conf := range configs {
-		wg.Add(1)
-		go func(conf config.ThumbFeedConfig) {
-			defer wg.Done()
-			section := ThumbFeedSection{
-				Title:    conf.Title,
-				Icon:     conf.Icon,
-				FeedType: conf.FeedType,
-			}
-			var cards []YouTubeCard
-			if conf.FeedType == "youtube" && len(conf.Channels) > 0 {
-				var cardWg sync.WaitGroup
-				var cardMu sync.Mutex
-				for _, channel := range conf.Channels {
-					cardWg.Add(1)
-					go func(channelName string) {
-						defer cardWg.Done()
-						time.Sleep(1 * time.Second)
-						fetchedVideos := scraper.getLatestVideos(channelName)
-						if len(fetchedVideos) > 0 {
-							cardMu.Lock()
-							cards = append(cards, fetchedVideos...)
-							cardMu.Unlock()
-						}
-					}(channel)
+		section := ThumbFeedSection{
+			Title:    conf.Title,
+			Icon:     conf.Icon,
+			FeedType: conf.FeedType,
+		}
+		var allVideos []YouTubeCard
+		if conf.FeedType == "youtube" && len(conf.Channels) > 0 {
+			for _, channel := range conf.Channels {
+				fetchedVideos := scraper.getLatestVideos(channel)
+				if len(fetchedVideos) > 0 {
+					allVideos = append(allVideos, fetchedVideos...)
 				}
-				cardWg.Wait()
+				time.Sleep(200 * time.Millisecond)
 			}
-			section.Cards = cards
-			mu.Lock()
-			sections = append(sections, section)
-			mu.Unlock()
-		}(conf)
+		}
+
+		sort.Slice(allVideos, func(i, j int) bool {
+			return allVideos[i].PublishedAt.After(allVideos[j].PublishedAt)
+		})
+
+		if conf.Limit > 0 && len(allVideos) > conf.Limit {
+			allVideos = allVideos[:conf.Limit]
+		}
+
+		section.Cards = allVideos
+		sections = append(sections, section)
 	}
-	wg.Wait()
 	return sections
 }

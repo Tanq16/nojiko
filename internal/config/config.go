@@ -41,6 +41,7 @@ type ThumbFeedConfig struct {
 	Icon     string   `yaml:"icon"`
 	FeedType string   `yaml:"feedType"`
 	Channels []string `yaml:"channels"`
+	Limit    int      `yaml:"limit,omitempty"`
 }
 
 type BookmarkCategory struct {

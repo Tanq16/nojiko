@@ -7,6 +7,15 @@ header:
   latitude: 43.65
   longitude: -79.38
 
+thumbFeeds:
+  - title: "Latest YouTube Videos"
+    icon: "youtube"
+    feedType: "youtube"
+    limit: 10
+    channels:
+      - "MrBeast"
+      - "LinusTechTips"
+
 statusCards:
   - title: "Project Status"
     icon: "github"
@@ -22,14 +31,6 @@ statusCards:
     cards:
       - name: "API Server"
       - name: "Database"
-
-thumbFeeds:
-  - title: "Latest YouTube Videos"
-    icon: "youtube"
-    feedType: "youtube"
-    channels:
-      - "MrBeast"
-      - "LinusTechTips"
 
 bookmarks:
   - category: "Social Media"

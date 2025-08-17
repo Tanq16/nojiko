@@ -3,7 +3,7 @@ package fetcher
 import (
 	"context"
 	"log"
-	"sync"
+	"time"
 
 	"github.com/google/go-github/v74/github"
 	"github.com/tanq16/nojiko/internal/config"
@@ -12,8 +12,6 @@ import (
 
 func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []StatusCardSection {
 	var sections []StatusCardSection
-	var wg sync.WaitGroup
-	var mu sync.Mutex
 
 	ctx := context.Background()
 	var client *github.Client
@@ -26,72 +24,58 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 	}
 
 	for _, conf := range configs {
-		wg.Add(1)
-		go func(conf config.StatusCardConfig) {
-			defer wg.Done()
-			section := StatusCardSection{
-				Title: conf.Title,
-				Icon:  conf.Icon,
-				Type:  conf.Type,
-			}
-			var cards []any
-			var cardWg sync.WaitGroup
-			var cardMu sync.Mutex
+		section := StatusCardSection{
+			Title: conf.Title,
+			Icon:  conf.Icon,
+			Type:  conf.Type,
+		}
+		var cards []any
 
-			for _, item := range conf.Cards {
-				cardWg.Add(1)
-				go func(item config.StatusCardItem) {
-					defer cardWg.Done()
-					var cardData any
+		for _, item := range conf.Cards {
+			var cardData any
 
-					switch conf.Type {
-					case "github":
-						repo, _, err := client.Repositories.Get(ctx, item.Owner, item.Repo)
-						if err != nil {
-							log.Printf("Error fetching repo %s/%s: %v", item.Owner, item.Repo, err)
-							return
-						}
-						issues, _, err := client.Issues.ListByRepo(ctx, item.Owner, item.Repo, &github.IssueListByRepoOptions{State: "open"})
-						if err != nil {
-							log.Printf("Error fetching issues for %s/%s: %v", item.Owner, item.Repo, err)
-							return
-						}
-						openIssues := 0
-						openPRs := 0
-						for _, issue := range issues {
-							if issue.IsPullRequest() {
-								openPRs++
-							} else {
-								openIssues++
-							}
-						}
-						cardData = GitHubCard{
-							Name:   repo.GetFullName(),
-							URL:    repo.GetHTMLURL(),
-							Stars:  repo.GetStargazersCount(),
-							Issues: openIssues,
-							PRs:    openPRs,
-						}
-
-					case "service":
-						cardData = ServiceStatusCard{
-							Name: item.Name,
-						}
+			switch conf.Type {
+			case "github":
+				repo, _, err := client.Repositories.Get(ctx, item.Owner, item.Repo)
+				if err != nil {
+					log.Printf("Error fetching repo %s/%s: %v", item.Owner, item.Repo, err)
+					continue
+				}
+				issues, _, err := client.Issues.ListByRepo(ctx, item.Owner, item.Repo, &github.IssueListByRepoOptions{State: "open"})
+				if err != nil {
+					log.Printf("Error fetching issues for %s/%s: %v", item.Owner, item.Repo, err)
+					continue
+				}
+				openIssues := 0
+				openPRs := 0
+				for _, issue := range issues {
+					if issue.IsPullRequest() {
+						openPRs++
+					} else {
+						openIssues++
 					}
-					if cardData != nil {
-						cardMu.Lock()
-						cards = append(cards, cardData)
-						cardMu.Unlock()
-					}
-				}(item)
+				}
+				cardData = GitHubCard{
+					Name:   repo.GetFullName(),
+					URL:    repo.GetHTMLURL(),
+					Stars:  repo.GetStargazersCount(),
+					Issues: openIssues,
+					PRs:    openPRs,
+				}
+
+			case "service":
+				cardData = ServiceStatusCard{
+					Name: item.Name,
+				}
 			}
-			cardWg.Wait()
-			section.Cards = cards
-			mu.Lock()
-			sections = append(sections, section)
-			mu.Unlock()
-		}(conf)
+
+			if cardData != nil {
+				cards = append(cards, cardData)
+			}
+			time.Sleep(200 * time.Millisecond)
+		}
+		section.Cards = cards
+		sections = append(sections, section)
 	}
-	wg.Wait()
 	return sections
 }
