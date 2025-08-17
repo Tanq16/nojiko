@@ -7,14 +7,15 @@ import (
 
 	"github.com/tanq16/nojiko/internal/config"
 	"github.com/tanq16/nojiko/internal/fetcher"
+	"github.com/tanq16/nojiko/internal/models"
 )
 
 type State struct {
 	mu          sync.RWMutex
 	cfg         *config.Config
-	header      *fetcher.HeaderInfo
-	statusCards []fetcher.StatusCardSection
-	thumbFeeds  []fetcher.ThumbFeedSection
+	header      *models.HeaderInfo
+	statusCards []models.StatusCardSection
+	thumbFeeds  []models.ThumbFeedSection
 	bookmarks   []config.BookmarkCategory
 }
 
@@ -55,19 +56,19 @@ func (s *State) StartUpdateLoop() {
 	}
 }
 
-func (s *State) GetHeader() *fetcher.HeaderInfo {
+func (s *State) GetHeader() *models.HeaderInfo {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.header
 }
 
-func (s *State) GetStatusCards() []fetcher.StatusCardSection {
+func (s *State) GetStatusCards() []models.StatusCardSection {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.statusCards
 }
 
-func (s *State) GetThumbFeeds() []fetcher.ThumbFeedSection {
+func (s *State) GetThumbFeeds() []models.ThumbFeedSection {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
 	return s.thumbFeeds

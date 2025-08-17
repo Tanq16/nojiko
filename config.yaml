@@ -1,4 +1,4 @@
-ghToken: "" # Add your GitHub token here if you have one
+ghToken: ""
 
 header:
   title: "Nojiko Dashboard"
@@ -23,18 +23,18 @@ statusCards:
     icon: "github"
     type: "github"
     cards:
-      - owner: "tanq16"
-        repo: "nojiko"
-      - owner: "torvalds"
-        repo: "linux"
-      - owner: "tanq16"
-        repo: "local-content-share"
+      - repo: "tanq16/nojiko"
+      - repo: "torvalds/linux"
+      - repo: "tanq16/local-content-share"
   - title: "Service Status"
     icon: "bar-chart-3"
     type: "service"
     cards:
-      - name: "API Server"
-      - name: "Database"
+      - name: "Adguard Home"
+        serviceType: "adguard"
+        url: "https://adguard.homelab.local"
+        username: ""
+        password: ""
 
 bookmarks:
   - category: "Social Media"
@@ -45,10 +45,12 @@ bookmarks:
         icon: "twitter"
       - name: "YouTube"
         url: "#"
+        icon: "youtube"
   - category: "Development"
     color: "ctp-yellow"
     folders:
       - name: "Frameworks"
+        icon: "folder"
         links:
           - name: "React Docs"
             url: "#"

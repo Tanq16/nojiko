@@ -31,9 +31,13 @@ type StatusCardConfig struct {
 }
 
 type StatusCardItem struct {
-	Owner string `yaml:"owner,omitempty"`
-	Repo  string `yaml:"repo,omitempty"`
-	Name  string `yaml:"name,omitempty"`
+	Repo        string `yaml:"repo,omitempty"`
+	Name        string `yaml:"name,omitempty"`
+	ServiceType string `yaml:"serviceType,omitempty"`
+	URL         string `yaml:"url,omitempty"`
+	APIKey      string `yaml:"apiKey,omitempty"`
+	Username    string `yaml:"username,omitempty"`
+	Password    string `yaml:"password,omitempty"`
 }
 
 type ThumbFeedConfig struct {
@@ -71,35 +75,6 @@ func Load(path string) (*Config, error) {
 	var cfg Config
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
 		return nil, err
-	}
-
-	for i := range cfg.StatusCards {
-		if cfg.StatusCards[i].Icon == "" {
-			cfg.StatusCards[i].Icon = "bar-chart-3"
-		}
-	}
-	for i := range cfg.ThumbFeeds {
-		if cfg.ThumbFeeds[i].Icon == "" {
-			cfg.ThumbFeeds[i].Icon = "tv-minimal"
-		}
-	}
-
-	for i := range cfg.Bookmarks {
-		for j := range cfg.Bookmarks[i].Links {
-			if cfg.Bookmarks[i].Links[j].Icon == "" {
-				cfg.Bookmarks[i].Links[j].Icon = "default"
-			}
-		}
-		for j := range cfg.Bookmarks[i].Folders {
-			if cfg.Bookmarks[i].Folders[j].Icon == "" {
-				cfg.Bookmarks[i].Folders[j].Icon = "folder"
-			}
-			for k := range cfg.Bookmarks[i].Folders[j].Links {
-				if cfg.Bookmarks[i].Folders[j].Links[k].Icon == "" {
-					cfg.Bookmarks[i].Folders[j].Links[k].Icon = "default"
-				}
-			}
-		}
 	}
 	return &cfg, nil
 }

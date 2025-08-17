@@ -1,23 +1,13 @@
-const ICONS = {
-    'twitter': 'twitter', 'youtube': 'youtube', 'github': 'github', 'linkedin': 'linkedin',
-    'folder': 'folder', 'dot': 'dot', 'figma': 'figma', 'code': 'code', 'package': 'package',
-    'terminal-square': 'terminal-square', 'newspaper': 'newspaper', 'pen-square': 'pen-square', 'rss': 'rss',
-    'bar-chart-3': 'bar-chart-3', 'tv-minimal': 'tv-minimal',
-    'default': 'link-2'
-};
-
-const getIcon = (name) => ICONS[name] || ICONS['default'];
-
 const createLinkHTML = (link) => `
     <a href="${link.url}" class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors">
-        <i data-lucide="${getIcon(link.icon)}" class="w-4 h-4 mr-3"></i>${link.name || 'Unnamed'}
+        <i data-lucide="${link.icon}" class="w-4 h-4 mr-3"></i>${link.name || 'Unnamed'}
     </a>`;
 
 const createFolderHTML = (folder) => `
     <details open>
         <summary class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors mb-2">
             <i data-lucide="chevron-right" class="chevron-icon w-4 h-4 mr-2"></i>
-            <i data-lucide="${getIcon(folder.icon)}" class="w-4 h-4 mr-2 text-ctp-peach"></i>
+            <i data-lucide="${folder.icon}" class="w-4 h-4 mr-2 text-ctp-peach"></i>
             ${folder.name || 'Unnamed'}
         </summary>
         <div class="pl-6 space-y-2">
@@ -50,6 +40,18 @@ const createWeatherHTML = (weather) => weather ? `
         <p class="text-xs text-ctp-overlay0">via Open-Meteo.com</p>
     </a>` : '';
 
+const createNumStatHTML = (stat) => {
+    if (!stat || !stat.text) {
+        return '';
+    }
+    const value = stat.displayValue || '';
+    const unit = stat.unit ? ` ${stat.unit}` : '';
+    return `<div class="flex items-center" title="${stat.text}">
+                <span class="text-ctp-subtext0 mr-1.5">${stat.text}:</span>
+                <span class="text-ctp-text font-semibold">${value}${unit}</span>
+            </div>`;
+};
+
 const CARD_TEMPLATES = {
     github: (repo) => `
         <div class="bg-ctp-base p-4 rounded-lg">
@@ -60,11 +62,25 @@ const CARD_TEMPLATES = {
                 <span class="flex items-center" title="Pull Requests"><i data-lucide="git-pull-request" class="w-4 h-4 mr-1.5 text-ctp-green"></i>${repo.prs}</span>
             </div>
         </div>`,
-    service: (service) => `
-        <div class="bg-ctp-base p-4 rounded-lg flex items-center justify-between">
-            <span class="font-semibold text-ctp-text">${service.name}</span>
-            <div class="w-3 h-3 rounded-full bg-ctp-green" title="Operational"></div>
-        </div>`,
+    service: (service) => {
+        const statsHTML = [
+            createNumStatHTML(service.numStats1),
+            createNumStatHTML(service.numStats2),
+            createNumStatHTML(service.numStats3),
+            createNumStatHTML(service.numStats4)
+        ].filter(Boolean).join('');
+
+        return `
+        <div class="bg-ctp-base p-4 rounded-lg">
+            <div class="flex items-center justify-between mb-2">
+                <span class="font-semibold text-ctp-text truncate" title="${service.name}">${service.name}</span>
+                <div class="w-3 h-3 rounded-full flex-shrink-0 ${service.healthy ? 'bg-ctp-green' : 'bg-ctp-red'}" title="${service.healthy ? 'Operational' : 'Down'}"></div>
+            </div>
+            <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm mt-2">
+                ${statsHTML || '<span class="text-ctp-overlay0">-</span>'}
+            </div>
+        </div>`;
+    },
     youtube: (video) => `
         <a href="${video.url}" target="_blank" rel="noopener noreferrer" class="group block bg-ctp-base rounded-lg overflow-hidden">
             <div class="relative">
@@ -87,7 +103,7 @@ const createStatusCardSectionHTML = (section) => {
     <section>
         <div class="h-px bg-ctp-surface0 my-8 w-1/4 mx-auto"></div>
         <h2 class="text-xl font-bold text-ctp-lavender mb-4 flex items-center">
-            <i data-lucide="${getIcon(section.icon)}" class="mr-3"></i>${section.title}
+            <i data-lucide="${section.icon}" class="mr-3"></i>${section.title}
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             ${section.cards.map(cardTemplate).join('')}
@@ -101,7 +117,7 @@ const createThumbFeedSectionHTML = (section) => {
     <section>
         <div class="h-px bg-ctp-surface0 my-8 w-1/4 mx-auto"></div>
         <h2 class="text-xl font-bold text-ctp-red mb-4 flex items-center">
-            <i data-lucide="${getIcon(section.icon)}" class="mr-3"></i>${section.title}
+            <i data-lucide="${section.icon}" class="mr-3"></i>${section.title}
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
             ${section.cards.map(cardTemplate).join('')}

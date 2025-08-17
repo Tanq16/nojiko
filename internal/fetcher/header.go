@@ -9,9 +9,10 @@ import (
 	"time"
 
 	"github.com/tanq16/nojiko/internal/config"
+	"github.com/tanq16/nojiko/internal/models"
 )
 
-func GetHeaderInfo(cfg *config.HeaderConfig) *HeaderInfo {
+func GetHeaderInfo(cfg *config.HeaderConfig) *models.HeaderInfo {
 	logoURL := "logo.png" // Default logo
 	if cfg.LogoURL != "" {
 		client := http.Client{Timeout: 5 * time.Second}
@@ -23,7 +24,7 @@ func GetHeaderInfo(cfg *config.HeaderConfig) *HeaderInfo {
 			log.Printf("Could not verify logo URL %s: %v. Falling back to default.", cfg.LogoURL, err)
 		}
 	}
-	info := &HeaderInfo{
+	info := &models.HeaderInfo{
 		Title:    cfg.Title,
 		LogoURL:  logoURL,
 		ShowLogo: cfg.ShowLogo,
@@ -34,7 +35,7 @@ func GetHeaderInfo(cfg *config.HeaderConfig) *HeaderInfo {
 	return info
 }
 
-func getOpenMeteoWeather(lat, lon float64) *WeatherInfo {
+func getOpenMeteoWeather(lat, lon float64) *models.WeatherInfo {
 	url := fmt.Sprintf("https://api.open-meteo.com/v1/forecast?latitude=%.4f&longitude=%.4f&current_weather=true", lat, lon)
 	resp, err := http.Get(url)
 	if err != nil {
@@ -46,17 +47,18 @@ func getOpenMeteoWeather(lat, lon float64) *WeatherInfo {
 		log.Printf("Failed to fetch weather data, status code: %d", resp.StatusCode)
 		return nil
 	}
-	var weatherData OpenMeteoResponse
+	var weatherData models.OpenMeteoResponse
 	if err := json.NewDecoder(resp.Body).Decode(&weatherData); err != nil {
 		log.Printf("Failed to decode weather data: %v", err)
 		return nil
 	}
-	return &WeatherInfo{
+	return &models.WeatherInfo{
 		TempC:       math.Round(weatherData.CurrentWeather.Temperature),
 		Description: weatherCodeToDescription(weatherData.CurrentWeather.WeatherCode),
 	}
 }
 
+// https://open-meteo.com/en/docs#weather_variable_documentation
 func weatherCodeToDescription(code int) string {
 	switch code {
 	case 0:

@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/tanq16/nojiko/internal/config"
+	"github.com/tanq16/nojiko/internal/models"
 )
 
 type youtubeScraper struct {
@@ -81,12 +82,10 @@ func parseTimeAgo(ago string) time.Time {
 	if len(matches) != 3 {
 		return time.Time{}
 	}
-
 	val, err := strconv.Atoi(matches[1])
 	if err != nil {
 		return time.Time{}
 	}
-
 	unit := matches[2]
 	switch unit {
 	case "minute":
@@ -102,11 +101,10 @@ func parseTimeAgo(ago string) time.Time {
 	case "year":
 		return now.AddDate(-val, 0, 0)
 	}
-
 	return time.Time{}
 }
 
-func (s *youtubeScraper) getLatestVideos(channelName string) []YouTubeCard {
+func (s *youtubeScraper) getLatestVideos(channelName string) []models.YouTubeCard {
 	url := fmt.Sprintf("https://www.youtube.com/@%s/videos", channelName)
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -141,7 +139,7 @@ func (s *youtubeScraper) getLatestVideos(channelName string) []YouTubeCard {
 		return nil
 	}
 
-	var videos []YouTubeCard
+	var videos []models.YouTubeCard
 	if len(data.Contents.TwoColumnBrowseResultsRenderer.Tabs) < 2 {
 		return nil
 	}
@@ -158,7 +156,7 @@ func (s *youtubeScraper) getLatestVideos(channelName string) []YouTubeCard {
 		if len(vr.Thumbnail.Thumbnails) > 0 {
 			bestThumbnail = vr.Thumbnail.Thumbnails[len(vr.Thumbnail.Thumbnails)-1].URL
 		}
-		videos = append(videos, YouTubeCard{
+		videos = append(videos, models.YouTubeCard{
 			Type:        "youtube",
 			Title:       vr.Title.Runs[0].Text,
 			URL:         fmt.Sprintf("https://www.youtube.com/watch?v=%s", vr.VideoID),
@@ -171,17 +169,16 @@ func (s *youtubeScraper) getLatestVideos(channelName string) []YouTubeCard {
 	return videos
 }
 
-func GetThumbFeedData(configs []config.ThumbFeedConfig) []ThumbFeedSection {
-	var sections []ThumbFeedSection
+func GetThumbFeedData(configs []config.ThumbFeedConfig) []models.ThumbFeedSection {
+	var sections []models.ThumbFeedSection
 	scraper := newYouTubeScraper()
-
 	for _, conf := range configs {
-		section := ThumbFeedSection{
+		section := models.ThumbFeedSection{
 			Title:    conf.Title,
 			Icon:     conf.Icon,
 			FeedType: conf.FeedType,
 		}
-		var allVideos []YouTubeCard
+		var allVideos []models.YouTubeCard
 		if conf.FeedType == "youtube" && len(conf.Channels) > 0 {
 			for _, channel := range conf.Channels {
 				fetchedVideos := scraper.getLatestVideos(channel)
@@ -191,15 +188,12 @@ func GetThumbFeedData(configs []config.ThumbFeedConfig) []ThumbFeedSection {
 				time.Sleep(200 * time.Millisecond)
 			}
 		}
-
 		sort.Slice(allVideos, func(i, j int) bool {
 			return allVideos[i].PublishedAt.After(allVideos[j].PublishedAt)
 		})
-
 		if conf.Limit > 0 && len(allVideos) > conf.Limit {
 			allVideos = allVideos[:conf.Limit]
 		}
-
 		section.Cards = allVideos
 		sections = append(sections, section)
 	}
