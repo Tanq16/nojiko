@@ -26,6 +26,10 @@ docker run --rm -v "$HOME/nojiko:/app" -p 80:8080 --name "nojiko" -d tanq16/noji
 
 WIP
 
+Here's a screenshot of what the app looks like:
+
+![](.github/assets/ss.png)
+
 ## Installation
 
 Create a directory to store the configuration file:
