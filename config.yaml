@@ -2,44 +2,31 @@ ghToken: "" # Add your GitHub token here if you have one
 
 header:
   title: "Nojiko Dashboard"
-  showLogo: true
+  showLogo: false
   showWeather: true
   latitude: 43.65
   longitude: -79.38
 
 statusCards:
   - title: "Project Status"
+    icon: "github"
+    type: "github"
     cards:
-      - type: "github"
-        owner: "tanq16"
+      - owner: "tanq16"
         repo: "nojiko"
-      - type: "github"
-        owner: "torvalds"
+      - owner: "torvalds"
         repo: "linux"
-      - type: "service"
-        name: "API Server"
-      - type: "service"
-        name: "Database"
-  - cards:
-      - type: "github"
-        owner: "tanq16"
-        repo: "nojiko"
-      - type: "github"
-        owner: "torvalds"
-        repo: "linux"
-      - type: "service"
-        name: "API Server"
-      - type: "service"
-        name: "Database"
+  - title: "Service Status"
+    icon: "bar-chart-3"
+    type: "service"
+    cards:
+      - name: "API Server"
+      - name: "Database"
 
 thumbFeeds:
   - title: "Latest YouTube Videos"
     icon: "youtube"
     feedType: "youtube"
-    channels:
-      - "MrBeast"
-      - "LinusTechTips"
-  - feedType: "youtube"
     channels:
       - "MrBeast"
       - "LinusTechTips"

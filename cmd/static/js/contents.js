@@ -81,19 +81,19 @@ const CARD_TEMPLATES = {
         </a>`,
 };
 
-const createStatusCardSectionHTML = (section) => `
+const createStatusCardSectionHTML = (section) => {
+    const cardTemplate = CARD_TEMPLATES[section.type] || (() => '<div>Unsupported card type</div>');
+    return `
     <section>
         <div class="h-px bg-ctp-surface0 my-8 w-1/4 mx-auto"></div>
         <h2 class="text-xl font-bold text-ctp-lavender mb-4 flex items-center">
             <i data-lucide="${getIcon(section.icon)}" class="mr-3"></i>${section.title}
         </h2>
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            ${section.cards.map(card => {
-                const template = CARD_TEMPLATES[card.type];
-                return template ? template(card) : '<div>Unsupported card type</div>';
-            }).join('')}
+            ${section.cards.map(cardTemplate).join('')}
         </div>
     </section>`;
+}
 
 const createThumbFeedSectionHTML = (section) => {
     const cardTemplate = CARD_TEMPLATES[section.feedType] || (() => '<div>Unsupported feed type</div>');

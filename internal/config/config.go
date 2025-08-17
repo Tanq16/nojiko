@@ -26,16 +26,14 @@ type HeaderConfig struct {
 type StatusCardConfig struct {
 	Title string           `yaml:"title"`
 	Icon  string           `yaml:"icon"`
+	Type  string           `yaml:"type"`
 	Cards []StatusCardItem `yaml:"cards"`
 }
 
 type StatusCardItem struct {
-	Type   string `yaml:"type"`
-	Owner  string `yaml:"owner,omitempty"`
-	Repo   string `yaml:"repo,omitempty"`
-	Name   string `yaml:"name,omitempty"`
-	APIKey string `yaml:"apikey,omitempty"`
-	URL    string `yaml:"url,omitempty"`
+	Owner string `yaml:"owner,omitempty"`
+	Repo  string `yaml:"repo,omitempty"`
+	Name  string `yaml:"name,omitempty"`
 }
 
 type ThumbFeedConfig struct {

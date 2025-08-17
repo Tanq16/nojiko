@@ -1,7 +1,6 @@
 package fetcher
 
 type GitHubCard struct {
-	Type   string `json:"type"`
 	Name   string `json:"name"`
 	URL    string `json:"url"`
 	Stars  int    `json:"stars"`
@@ -10,7 +9,6 @@ type GitHubCard struct {
 }
 
 type ServiceStatusCard struct {
-	Type string `json:"type"`
 	URL  string `json:"url"`
 	Name string `json:"name"`
 }
@@ -27,6 +25,7 @@ type YouTubeCard struct {
 type StatusCardSection struct {
 	Title string `json:"title"`
 	Icon  string `json:"icon"`
+	Type  string `json:"type"`
 	Cards []any  `json:"cards"`
 }
 

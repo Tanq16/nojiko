@@ -32,6 +32,7 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 			section := StatusCardSection{
 				Title: conf.Title,
 				Icon:  conf.Icon,
+				Type:  conf.Type,
 			}
 			var cards []any
 			var cardWg sync.WaitGroup
@@ -41,7 +42,9 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 				cardWg.Add(1)
 				go func(item config.StatusCardItem) {
 					defer cardWg.Done()
-					switch item.Type {
+					var cardData any
+
+					switch conf.Type {
 					case "github":
 						repo, _, err := client.Repositories.Get(ctx, item.Owner, item.Repo)
 						if err != nil {
@@ -62,25 +65,22 @@ func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []Stat
 								openIssues++
 							}
 						}
-						card := GitHubCard{
-							Type:   "github",
+						cardData = GitHubCard{
 							Name:   repo.GetFullName(),
 							URL:    repo.GetHTMLURL(),
 							Stars:  repo.GetStargazersCount(),
 							Issues: openIssues,
 							PRs:    openPRs,
 						}
-						cardMu.Lock()
-						cards = append(cards, card)
-						cardMu.Unlock()
 
 					case "service":
-						card := ServiceStatusCard{
-							Type: "service",
+						cardData = ServiceStatusCard{
 							Name: item.Name,
 						}
+					}
+					if cardData != nil {
 						cardMu.Lock()
-						cards = append(cards, card)
+						cards = append(cards, cardData)
 						cardMu.Unlock()
 					}
 				}(item)
