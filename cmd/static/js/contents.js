@@ -66,10 +66,18 @@ const CARD_TEMPLATES = {
             <div class="w-3 h-3 rounded-full bg-ctp-green" title="Operational"></div>
         </div>`,
     youtube: (video) => `
-        <a href="${video.url}" class="group block">
-            <img src="${video.thumbnail}" alt="Video Thumbnail" class="w-full h-28 object-cover rounded-lg mb-2" onerror="this.onerror=null;this.src='https://placehold.co/600x400/181825/cdd6f4?text=Video';">
-            <h3 class="font-semibold text-sm text-ctp-text truncate group-hover:text-ctp-red transition-colors">${video.title}</h3>
-            <p class="text-xs text-ctp-subtext0">${video.channel}</p>
+        <a href="${video.url}" target="_blank" rel="noopener noreferrer" class="group block bg-ctp-base rounded-lg overflow-hidden">
+            <div class="relative">
+                <img src="${video.thumbnail}" alt="Video Thumbnail" class="w-full h-32 object-cover" onerror="this.onerror=null;this.src='https://placehold.co/600x400/181825/cdd6f4?text=Video';">
+                <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-all"></div>
+            </div>
+            <div class="p-3">
+                <h3 class="font-semibold text-sm text-ctp-text truncate group-hover:text-ctp-red transition-colors" title="${video.title}">${video.title}</h3>
+                <div class="flex justify-between items-center mt-1">
+                    <p class="text-xs text-ctp-subtext0 truncate">@${video.channel}</p>
+                    <p class="text-xs text-ctp-overlay2 flex-shrink-0 ml-2">${video.published}</p>
+                </div>
+            </div>
         </a>`,
 };
 

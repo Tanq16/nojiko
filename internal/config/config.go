@@ -39,11 +39,10 @@ type StatusCardItem struct {
 }
 
 type ThumbFeedConfig struct {
-	Title        string   `yaml:"title"`
-	Icon         string   `yaml:"icon"`
-	FeedType     string   `yaml:"feedType"`
-	ShowMockData bool     `yaml:"showMockData"`
-	Channels     []string `yaml:"channels"`
+	Title    string   `yaml:"title"`
+	Icon     string   `yaml:"icon"`
+	FeedType string   `yaml:"feedType"`
+	Channels []string `yaml:"channels"`
 }
 
 type BookmarkCategory struct {

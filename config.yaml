@@ -20,8 +20,7 @@ statusCards:
         name: "API Server"
       - type: "service"
         name: "Database"
-  - title: "Project Status"
-    cards:
+  - cards:
       - type: "github"
         owner: "tanq16"
         repo: "nojiko"
@@ -37,10 +36,13 @@ thumbFeeds:
   - title: "Latest YouTube Videos"
     icon: "youtube"
     feedType: "youtube"
-    showMockData: true
     channels:
-      - "UC..."
-      - "UC..."
+      - "MrBeast"
+      - "LinusTechTips"
+  - feedType: "youtube"
+    channels:
+      - "MrBeast"
+      - "LinusTechTips"
 
 bookmarks:
   - category: "Social Media"
