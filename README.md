@@ -24,7 +24,19 @@ docker run --rm -v "$HOME/nojiko:/app" -p 80:8080 --name "nojiko" -d tanq16/noji
 
 ## Features
 
-WIP
+Work in progress
+
+Nojiko focuses on simplicity in a dashboard application. It offers 4 main sections on the screen:
+- Header - this shows a logo (optional) and title of your choice, along with optional weather given your location
+- Bookmarks - this is a sidebar that shows your bookmarks with your choice of names and icons across your choice of categories and folders within categories (both foldable)
+- Status Cards - these are the first set of cards on the main screen, currently 2 types of sections are supported - github repo status (shows PRs, issues, and stars), and service status (stats from other homelab services)
+- Feed Cards - this is the next set of cards that shows youtube videos with thumbnails for your configured creators
+
+> [!WARNING]
+> Currently, only Adguard Home and Jellyfin are supported for services. Additionally, only Youtube feeds are supported. RSS feeds will be added in the future.
+
+> [!IMPORTANT]
+> All configuration of the dashboard is done via a `config.yaml` file. You can choose your icons, but they need to be part of [lucide](https://lucide.dev/icons/).
 
 Here's a screenshot of what the app looks like:
 
@@ -55,7 +67,7 @@ The application with run at your `machineIP:8080`. Allow a few seconds for the f
 
 ## Usage
 
-WIP
+Work in progress
 
 ## AI-Development
 

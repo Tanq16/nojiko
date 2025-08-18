@@ -23,6 +23,9 @@ var serviceFetchers = map[string]func(config.StatusCardItem) ServiceFetcher{
 	"adguard": func(cfg config.StatusCardItem) ServiceFetcher {
 		return services.NewAdguard(cfg)
 	},
+	"jellyfin": func(cfg config.StatusCardItem) ServiceFetcher {
+		return services.NewJellyfin(cfg)
+	},
 }
 
 func GetStatusCardData(configs []config.StatusCardConfig, ghToken string) []models.StatusCardSection {
