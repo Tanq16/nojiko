@@ -68,7 +68,115 @@ The application with run at your `machineIP:8080`. Allow a few seconds for the f
 
 ## Usage
 
-Work in progress
+Nojiko is configured entirely through the `config.yaml` file. The dashboard's content, from the header to the bookmarks, is determined by this file. You can edit this file directly or through the settings icon on the dashboard itself.
+
+Below is a breakdown of the main configuration sections.
+
+### Header
+
+This section controls the main header at the top of the page.
+
+```yaml
+header:
+  title: "Nojiko Dashboard"
+  showLogo: false
+  logoURL: "" # URL to your logo image
+  showWeather: true
+  latitude: 43.65
+  longitude: -79.38
+```
+
+- **title**: The main title displayed in the header.
+- **showLogo**: Set to `true` to display a logo next to the title.
+- **logoURL**: The direct URL to your logo image.
+- **showWeather**: Set to `true` to display the current weather.
+- **latitude** & **longitude**: Your location coordinates for accurate weather data.
+
+### Bookmarks
+
+This section configures the bookmarks displayed in the sidebar. You can organize links into categories and folders.
+
+```yaml
+bookmarks:
+  - category: "Social Media"
+    color: "ctp-green" # Uses Catppuccin color names
+    links:
+      - name: "Twitter / X"
+        url: "#"
+        icon: "twitter" # Icon name from lucide.dev
+  - category: "Development"
+    color: "ctp-yellow"
+    folded: true # Category is collapsed by default
+    folders:
+      - name: "Frameworks"
+        icon: "folder"
+        folded: false # Folder is expanded by default
+        links:
+          - name: "React Docs"
+            url: "#"
+            icon: "dot"
+```
+
+- **category**: The name of the bookmark group.
+- **color**: Sets the color for the category title. Use Catppuccin color names (e.g., `ctp-green`, `ctp-mauve`).
+- **links**: A list of direct bookmarks.
+- **folders**: A list of folders within a category to further organize links.
+- **folded**: Set to `true` to make a category or folder collapsed by default.
+- **icon**: The name of an icon from [lucide.dev](https://lucide.dev/icons/) to display next to the link or folder.
+
+### Status Cards
+
+These cards display status information from various services, like GitHub repository statistics or the health of your self-hosted applications.
+
+```yaml
+statusCards:
+  - title: "Project Status"
+    icon: "github"
+    type: "github"
+    cards:
+      - repo: "tanq16/nojiko"
+  - title: "Service Status"
+    icon: "bar-chart-3"
+    type: "service"
+    cards:
+      - name: "Adguard Home"
+        serviceType: "adguard"
+        url: "http://adguard.local"
+        username: "your_user"
+        password: "your_password"
+      - name: "Jellyfin"
+        serviceType: "jellyfin"
+        url: "http://jellyfin.local"
+        apiKey: "your_api_key"
+```
+
+- **title**: The title for the status card section.
+- **icon**: An icon for the section title from [lucide.dev](https://lucide.dev/icons/).
+- **type**: The type of cards in this section. Supported types are `github` and `service`.
+- **cards**: A list of items to display.
+  - For `github`, specify the `repo` as `owner/repository`.
+  - For `service`, specify the `name`, `serviceType` (`adguard` or `jellyfin`), `url`, and necessary credentials (`username`/`password` for Adguard, `apiKey` for Jellyfin).
+
+### Thumbnail Feeds
+
+This section displays a feed of cards with thumbnails, currently supporting YouTube channels.
+
+```yaml
+thumbFeeds:
+  - title: "YouTube Feed"
+    icon: "youtube"
+    feedType: "youtube"
+    limit: 10
+    channels:
+      - "mkbhd"
+      - "LinusTechTips"
+```
+
+- **title**: The title for the feed section.
+- **icon**: An icon for the section title from [lucide.dev](https://lucide.dev/icons/).
+- **feedType**: The type of feed. Currently, only `youtube` is supported.
+- **limit**: The maximum number of videos to display.
+- **channels**: A list of YouTube channel handles (the `@` is not needed).
 
 ## AI-Development
 
