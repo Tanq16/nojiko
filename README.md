@@ -18,13 +18,11 @@ A simple, beautiful, and customizable dashboard for your self-hosted domain. Noj
 `Quickstart` &rarr;
 
 ```bash
-docker run --rm -v "$HOME/nojiko:/app" -p 80:8080 --name "nojiko" -d tanq16/nojiko:main
+docker run --rm -v "$HOME/nojiko/config.yaml:/app/config.yaml" -p 80:8080 --name "nojiko" -d tanq16/nojiko:main
 # $HOME/nojiko should contain the config.yaml file
 ```
 
 ## Features
-
-Work in progress
 
 Nojiko focuses on simplicity in a dashboard application. It offers 4 main sections on the screen:
 - Header - this shows a logo (optional) and title of your choice, along with optional weather given your location
@@ -33,10 +31,13 @@ Nojiko focuses on simplicity in a dashboard application. It offers 4 main sectio
 - Feed Cards - this is the next set of cards that shows youtube videos with thumbnails for your configured creators
 
 > [!WARNING]
-> Currently, only Adguard Home and Jellyfin are supported for services. Additionally, only Youtube feeds are supported. RSS feeds will be added in the future.
+> Currently, only Adguard Home and Jellyfin are supported for services. Additionally, only Youtube feeds are supported. RSS feeds and additional services will be added in the future.
 
 > [!IMPORTANT]
-> All configuration of the dashboard is done via a `config.yaml` file. You can choose your icons, but they need to be part of [lucide](https://lucide.dev/icons/).
+> All configuration of the dashboard is done via a `config.yaml` file. You can choose your icons, but they need to be part of [lucide](https://lucide.dev/icons/). The config file can also be edited directly from the dashboard page.
+
+> [!TIP]
+> When attempting to test out configurations, it's important to note that things like GitHub status and YouTube feeds can often lead to throttling. Therefore, it's best to try out configs with such sections commented out.
 
 Here's a screenshot of what the app looks like:
 
@@ -58,7 +59,7 @@ services:
     image: tanq16/nojiko:main
     container_name: nojiko
     volumes:
-      - /home/USER/nojiko:/app # this is the dir that has your config
+      - /home/USER/nojiko/config.yaml:/app/config.yaml # this is the dir that has your config
     ports:
       - 8080:8080
 ```
@@ -71,7 +72,7 @@ Work in progress
 
 ## AI-Development
 
-This is my first project that I completely vibe-coded. Vibe coded also means various things - the description I mean is the fact that I control implementation and tell AI what to do, not a simplistic variant of "hey AI, write me a dashboard application that has bookmarks". I described the entirety of the vibe code process I took for this project below, so feel free to expand and read.
+This is my first project that I completely vibe-coded (and am continuing to do so). Vibe coded also means various things - the description I mean is the fact that I control implementation and tell AI what to do, not a simplistic variant of "hey AI, write me a dashboard application that has bookmarks". I described the entirety of the vibe code process I took for this project below, so feel free to expand and read.
 
 <details>
 <summary>Previous experience with vibe-coding vs. this one</summary>

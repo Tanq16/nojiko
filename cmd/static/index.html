@@ -82,6 +82,29 @@
         </main>
     </div>
 
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="fixed inset-0 bg-black/70 z-40 hidden items-center justify-center">
+        <div class="bg-ctp-crust p-6 rounded-lg w-full max-w-3xl h-[80vh] flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center mb-4 flex-shrink-0">
+                <h2 class="text-xl font-bold text-ctp-mauve flex items-center">
+                    <i data-lucide="settings-2" class="mr-3"></i>Edit Configuration
+                </h2>
+                <button id="close-modal-btn" class="text-ctp-subtext1 hover:text-ctp-rosewater">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <textarea id="config-editor" class="w-full flex-grow bg-ctp-base text-ctp-text p-4 rounded-md font-mono text-sm resize-none border border-ctp-surface0 focus:outline-none focus:ring-2 focus:ring-ctp-mauve"></textarea>
+            <div id="save-status" class="text-sm h-5 mt-2 text-ctp-subtext1"></div>
+            <div class="flex justify-end space-x-4 mt-2 flex-shrink-0">
+                <button id="cancel-btn" class="px-5 py-2 bg-ctp-surface1 rounded-md hover:bg-ctp-surface2 transition-colors">Cancel</button>
+                <button id="save-btn" class="px-5 py-2 bg-ctp-blue text-ctp-base rounded-md hover:bg-ctp-sapphire transition-colors font-semibold flex items-center">
+                    <span id="save-btn-text">Save</span>
+                    <div id="save-spinner" class="w-4 h-4 border-2 border-ctp-base border-t-transparent rounded-full animate-spin ml-2 hidden"></div>
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script src="js/contents.js"></script>
     <script src="js/logic.js"></script>
 </body>

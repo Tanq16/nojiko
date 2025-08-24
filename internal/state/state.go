@@ -28,9 +28,7 @@ func NewState(cfg *config.Config) *State {
 	return s
 }
 
-func (s *State) updateState() {
-	s.mu.Lock()
-	defer s.mu.Unlock()
+func (s *State) updateStateUnlocked() {
 	log.Println("Updating application state...")
 	s.header = fetcher.GetHeaderInfo(&s.cfg.Header)
 
@@ -46,6 +44,27 @@ func (s *State) updateState() {
 	}()
 	wg.Wait()
 	log.Println("Application state updated.")
+}
+
+func (s *State) updateState() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.updateStateUnlocked()
+}
+
+func (s *State) ReloadConfig() error {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	log.Println("Reloading configuration from file...")
+	newCfg, err := config.Load("config.yaml")
+	if err != nil {
+		log.Printf("Error reloading config.yaml: %v", err)
+		return err
+	}
+	s.cfg = newCfg
+	s.bookmarks = newCfg.Bookmarks
+	s.updateStateUnlocked()
+	return nil
 }
 
 func (s *State) StartUpdateLoop() {

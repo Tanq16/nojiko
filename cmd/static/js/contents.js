@@ -10,7 +10,7 @@ const createFolderHTML = (folder) => `
             <i data-lucide="${folder.icon}" class="w-4 h-4 mr-2 text-ctp-peach"></i>
             ${folder.name || 'Unnamed'}
         </summary>
-        <div class="pl-6 space-y-2">
+        <div class="pl-10 space-y-2">
             ${folder.links.map(createLinkHTML).join('')}
         </div>
     </details>`;
@@ -28,7 +28,11 @@ const createCategoryHTML = (cat) => `
 
 const createHeaderContentHTML = (header) => `
     ${header.showLogo ? `<img src="${header.logoURL}" alt="Logo" class="w-16 h-16 rounded-full mr-4" onerror="this.onerror=null;this.src='logo-low.png';">` : ''}
-    <h1 class="text-3xl font-bold text-ctp-text">${header.title}</h1>`;
+    <h1 class="text-3xl font-bold text-ctp-text">${header.title}</h1>
+    <button id="settings-btn" class="ml-4 text-ctp-subtext1 hover:text-ctp-rosewater transition-all" title="Edit Config">
+        <i data-lucide="cog" class="w-6 h-6"></i>
+    </button>
+    `;
 
 const createWeatherHTML = (weather) => weather ? `
     <a href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center sm:items-end w-full">
