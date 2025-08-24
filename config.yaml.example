@@ -48,10 +48,18 @@ bookmarks:
         icon: "youtube"
   - category: "Development"
     color: "ctp-yellow"
+    folded: true # This category will be folded by default
     folders:
       - name: "Frameworks"
         icon: "folder"
         links:
           - name: "React Docs"
+            url: "#"
+            icon: "dot"
+      - name: "Databases"
+        icon: "database"
+        folded: true # This folder will be folded by default
+        links:
+          - name: "PostgreSQL"
             url: "#"
             icon: "dot"

@@ -4,7 +4,7 @@ const createLinkHTML = (link) => `
     </a>`;
 
 const createFolderHTML = (folder) => `
-    <details open>
+    <details ${folder.folded ? '' : 'open'}>
         <summary class="flex items-center text-ctp-subtext1 hover:text-ctp-rosewater transition-colors mb-2">
             <i data-lucide="chevron-right" class="chevron-icon w-4 h-4 mr-2"></i>
             <i data-lucide="${folder.icon}" class="w-4 h-4 mr-2 text-ctp-peach"></i>
@@ -16,7 +16,7 @@ const createFolderHTML = (folder) => `
     </details>`;
 
 const createCategoryHTML = (cat) => `
-    <details open>
+    <details ${cat.folded ? '' : 'open'}>
         <summary class="font-semibold text-${cat.color || 'ctp-green'} mb-2 flex items-center">
             <i data-lucide="chevron-right" class="chevron-icon w-4 h-4 mr-2"></i>${cat.category}
         </summary>

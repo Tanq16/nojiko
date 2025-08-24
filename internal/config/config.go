@@ -51,14 +51,16 @@ type ThumbFeedConfig struct {
 type BookmarkCategory struct {
 	Category string   `yaml:"category" json:"category"`
 	Color    string   `yaml:"color"    json:"color"`
+	Folded   bool     `yaml:"folded,omitempty" json:"folded"`
 	Links    []Link   `yaml:"links"    json:"links"`
 	Folders  []Folder `yaml:"folders"  json:"folders"`
 }
 
 type Folder struct {
-	Name  string `yaml:"name"  json:"name"`
-	Icon  string `yaml:"icon"  json:"icon"`
-	Links []Link `yaml:"links" json:"links"`
+	Name   string `yaml:"name"  json:"name"`
+	Icon   string `yaml:"icon"  json:"icon"`
+	Folded bool   `yaml:"folded,omitempty" json:"folded"`
+	Links  []Link `yaml:"links" json:"links"`
 }
 
 type Link struct {
